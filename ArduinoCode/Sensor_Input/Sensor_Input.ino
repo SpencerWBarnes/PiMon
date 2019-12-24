@@ -79,7 +79,7 @@ void loop()
 // Get Sonar data in json style string
 String getSonarData(NewPing sonarSensor)
 {
-  JsonStringBuilder output = new JsonStringBuilder(2,6);
+  JsonStringBuilder output = JsonStringBuilder(2,6);
   output.add("data", sonarSensor.convert_cm(sonarSensor.ping_median(3)));
   output.add("units", "cm");
   return output.getJsonString();
@@ -88,7 +88,7 @@ String getSonarData(NewPing sonarSensor)
 // Get Limit Switch data in json style string
 String getLimitSwitchData(int switchPin)
 {
-  JsonStringBuilder output = new JsonStringBuilder(1,5);
+  JsonStringBuilder output = JsonStringBuilder(1,5);
   output.add("data", digitalRead(switchPin));
   return output.getJsonString();
 }
@@ -96,7 +96,7 @@ String getLimitSwitchData(int switchPin)
 // Aggregate data into message to be sent to Pi
 String getSensorData()
 {
-  JsonStringBuilder output = new JsonStringBuilder(4,12);
+  JsonStringBuilder output = JsonStringBuilder(4,12);
   output.add("ack",millis()%2000);
 
   // This follows the JSON format
