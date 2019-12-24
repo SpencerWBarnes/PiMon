@@ -77,14 +77,14 @@ String getSensorData()
   output.add("limitSwitch1", getLimitSwitchData(LIMITSWITCH1));
 
   //DEBUG PLEASE REMOVE
-  output.add("dummyData", "{/"data/":"+String(dummyData)+",/"units/":/"dummy/"}");
+  output.add("dummyData", "{\"data\":"+String(dummyData)+",\"units\":\"dummy\"}");
 
   //DEBUG PLEASE REMOVE
   if (dummyData%50 == 0)
   {
-    output.add("Dumb Chance", "{/"data/":"+String(dummyData)+"}");
+    output.add("Dumb Chance", "{\"data\":"+String(dummyData)+"}");
   }
-  output.add("tick", "{/"data/":/"./"}");
+  output.add("tick", "{\"data\":\".\"}");
 
   return output.getJsonString();
 }
@@ -135,20 +135,20 @@ class JsonStringBuilder
 
     void add(String propertyName, String propertyValue)
     {
-      // Name and value requires quotes, thus they must be escaped as /"
-      message += "/""+ propertyName +"/":/""+ propertyValue +"/",";
+      // Name and value requires quotes, thus they must be escaped as \"
+      message += "\""+ propertyName +"\":\""+ propertyValue +"\",";
     }
 
     void add(String propertyName, int propertyValue)
     {
-      // Name requires quotes, thus they must be escaped as /"
-      message += "/""+ propertyName +"/":"+ propertyValue +",";
+      // Name requires quotes, thus they must be escaped as \"
+      message += "\""+ propertyName +"\":"+ propertyValue +",";
     }
 
     void add(String propertyName, bool propertyValue)
     {
-      // Name requires quotes, thus they must be escaped as /"
-      message += "/""+ propertyName +"/":"+ propertyValue +",";
+      // Name requires quotes, thus they must be escaped as \"
+      message += "\""+ propertyName +"\":"+ propertyValue +",";
     }
 
     String getJsonString()
