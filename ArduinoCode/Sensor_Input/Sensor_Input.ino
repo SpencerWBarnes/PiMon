@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #include <NewPing.h>
 
 #define SONAR1_trig 12
@@ -40,53 +41,52 @@ void loop()
     dummyData--;
 }
 
-// Generic data extractions and unit for each category of sensor
-String getSonarData(String name, NewPing sonarSensor)
+// Get Sonar data in json style string
+String getSonarData(NewPing sonarSensor)
 {
-  String output = name+",num,";
-  double medianTime = sonarSensor.ping_median(3);
-  output = output + sonarSensor.convert_cm(medianTime) + ",cm;";
-  return output;
+  JsonStringBuilder output = new JsonStringBuilder(2,6);
+  output.add("data", sonarSensor.convert_cm(sonarSensor.ping_median(3)));
+  output.add("units", "cm");
+  return output.getJsonString();
 }
 
-String getLimitSwitchData(String name, int switchPin)
+// Get Limit Switch data in json style string
+String getLimitSwitchData(int switchPin)
 {
-  String output = name+",bool,";
-  output = output + digitalRead(switchPin) + ",bool;";
-  return output;
+  JsonStringBuilder output = new JsonStringBuilder(1,5);
+  output.add("data", digitalRead(switchPin));
+  return output.getJsonString();
 }
 
 // Aggregate data into message to be sent to Pi
 String getSensorData()
 {
-  // Sequence number
-  String output = "seq,"+String(millis()%2000)+";";
+  JsonStringBuilder output = new JsonStringBuilder(4,12);
+  output.add("ack",millis()%2000);
 
-  // sensor data: <sensorName>,<dataType>,<data>,<units>
-  // Sensor data is composed of comma ',' separated attributes
-  
-  // message data: <sensorData>;<sensorData>;\n
-  // Messages are composed of semicolon ';' separated sensor readings and end with newline '\n'
+  // This follows the JSON format
+  // sensor data: {"data":<data>,"units":<units>}
+  // message data: {"ack":<millis>,"sensorName":{sensorData},"sensorName":{sensorData}}\n
   
   //Sonar sensors:
   // sonar
-  output = output + getSonarData("sonar1",sonar);
+  output.add("sonar1",getSonarData(sonar));
 
   //Limit switch sensors:
   // LIMITSWITCH1
-  output = output + getLimitSwitchData("limitSwitch1", LIMITSWITCH1);
+  output.add("limitSwitch1", getLimitSwitchData(LIMITSWITCH1));
 
   //DEBUG PLEASE REMOVE
-  output = output + "dummyData,num,"+dummyData+",dummy;";
+  output.add("dummyData", "{/"data/":"+String(dummyData)+",/"units/":/"dummy/"}");
 
   //DEBUG PLEASE REMOVE
   if (dummyData%50 == 0)
   {
-    output = output + "Dumb Chance,str, : "+dummyData+",str;";
+    output.add("Dumb Chance", "{/"data/":"+String(dummyData)+"}");
   }
-  output = output + "tick,str,.,str;";
+  output.add("tick", "{/"data/":/"./"}");
 
-  return output;
+  return output.getJsonString();
 }
 
 // Serial input parser
@@ -119,4 +119,41 @@ String cmdGetSensorData(String command)
     return getSensorData();
   }
   return "";
+}
+
+class JsonStringBuilder
+{
+  private:
+    String message;
+
+  public:
+    JsonStringBuilder(int estimatedNumberOfElements = 1, int estimatedElementSize = 10)
+    {
+      message = "";
+      message.reserve((estimatedElementSize+4)*estimatedNumberOfElements);
+    }
+
+    void add(String propertyName, String propertyValue)
+    {
+      // Name and value requires quotes, thus they must be escaped as /"
+      message += "/""+ propertyName +"/":/""+ propertyValue +"/",";
+    }
+
+    void add(String propertyName, int propertyValue)
+    {
+      // Name requires quotes, thus they must be escaped as /"
+      message += "/""+ propertyName +"/":"+ propertyValue +",";
+    }
+
+    void add(String propertyName, bool propertyValue)
+    {
+      // Name requires quotes, thus they must be escaped as /"
+      message += "/""+ propertyName +"/":"+ propertyValue +",";
+    }
+
+    String getJsonString()
+    {
+      // Cut off last comma , and encompass in braces {}
+      return "{"+ message.substring(0, message.length()-1) +"}";
+    }
 }
