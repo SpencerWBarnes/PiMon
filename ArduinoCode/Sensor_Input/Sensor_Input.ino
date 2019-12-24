@@ -87,7 +87,7 @@ JsonStringBuilder getSonarData(NewPing sonarSensor)
 {
   JsonStringBuilder output = JsonStringBuilder(2,6);
   output.add("data", sonarSensor.convert_cm(sonarSensor.ping_median(3)));
-  output.add("units", "cm");
+  output.add("units", String("cm"));
   return output;
 }
 
