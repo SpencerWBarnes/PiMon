@@ -20,7 +20,10 @@ class JsonStringBuilder
     String message;
 
   public:
-    JsonStringBuilder(int estimatedNumberOfElements = 1, int estimatedElementSize = 10)
+    // I wanted default parameters of 1 then 10, but Arduino can ONLY have defaults in the
+    //  prototype, not in the defintion. When this is moved to a library, define defaults
+    //  in the header file's prototypes
+    JsonStringBuilder(int estimatedNumberOfElements, int estimatedElementSize)
     {
       message = "";
       message.reserve((estimatedElementSize+4)*estimatedNumberOfElements);
@@ -32,13 +35,8 @@ class JsonStringBuilder
       message += "\""+ propertyName +"\":\""+ propertyValue +"\",";
     }
 
-    void add(String propertyName, int propertyValue)
-    {
-      // Name requires quotes, thus they must be escaped as \"
-      message += "\""+ propertyName +"\":"+ propertyValue +",";
-    }
-
-    void add(String propertyName, bool propertyValue)
+    template <class T>
+    void add(String propertyName, T propertyValue)
     {
       // Name requires quotes, thus they must be escaped as \"
       message += "\""+ propertyName +"\":"+ propertyValue +",";
