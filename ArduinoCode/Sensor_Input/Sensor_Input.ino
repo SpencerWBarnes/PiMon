@@ -14,6 +14,43 @@ bool dummyDataDirection = true;
 String incoming = "";
 String outgoing = "";
 
+class JsonStringBuilder
+{
+  private:
+    String message;
+
+  public:
+    JsonStringBuilder(int estimatedNumberOfElements = 1, int estimatedElementSize = 10)
+    {
+      message = "";
+      message.reserve((estimatedElementSize+4)*estimatedNumberOfElements);
+    }
+
+    void add(String propertyName, String propertyValue)
+    {
+      // Name and value requires quotes, thus they must be escaped as \"
+      message += "\""+ propertyName +"\":\""+ propertyValue +"\",";
+    }
+
+    void add(String propertyName, int propertyValue)
+    {
+      // Name requires quotes, thus they must be escaped as \"
+      message += "\""+ propertyName +"\":"+ propertyValue +",";
+    }
+
+    void add(String propertyName, bool propertyValue)
+    {
+      // Name requires quotes, thus they must be escaped as \"
+      message += "\""+ propertyName +"\":"+ propertyValue +",";
+    }
+
+    String getJsonString()
+    {
+      // Cut off last comma , and encompass in braces {}
+      return "{"+ message.substring(0, message.length()-1) +"}";
+    }
+};
+
 void setup() 
 {
   Serial.begin(115200);
@@ -119,41 +156,4 @@ String cmdGetSensorData(String command)
     return getSensorData();
   }
   return "";
-}
-
-class JsonStringBuilder
-{
-  private:
-    String message;
-
-  public:
-    JsonStringBuilder(int estimatedNumberOfElements = 1, int estimatedElementSize = 10)
-    {
-      message = "";
-      message.reserve((estimatedElementSize+4)*estimatedNumberOfElements);
-    }
-
-    void add(String propertyName, String propertyValue)
-    {
-      // Name and value requires quotes, thus they must be escaped as \"
-      message += "\""+ propertyName +"\":\""+ propertyValue +"\",";
-    }
-
-    void add(String propertyName, int propertyValue)
-    {
-      // Name requires quotes, thus they must be escaped as \"
-      message += "\""+ propertyName +"\":"+ propertyValue +",";
-    }
-
-    void add(String propertyName, bool propertyValue)
-    {
-      // Name requires quotes, thus they must be escaped as \"
-      message += "\""+ propertyName +"\":"+ propertyValue +",";
-    }
-
-    String getJsonString()
-    {
-      // Cut off last comma , and encompass in braces {}
-      return "{"+ message.substring(0, message.length()-1) +"}";
-    }
 }
