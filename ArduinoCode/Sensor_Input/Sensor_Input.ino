@@ -47,6 +47,11 @@ class JsonStringBuilder
       // Cut off last comma , and encompass in braces {}
       return "{"+ message.substring(0, message.length()-1) +"}";
     }
+
+    friend String operator+ (const String& first, const JsonStringBuilder& second)
+    {
+      return first + second.getJsonString();
+    }
 };
 
 void setup() 
@@ -77,12 +82,12 @@ void loop()
 }
 
 // Get Sonar data in json style string
-String getSonarData(NewPing sonarSensor)
+JsonStringBuilder getSonarData(NewPing sonarSensor)
 {
   JsonStringBuilder output = JsonStringBuilder(2,6);
   output.add("data", sonarSensor.convert_cm(sonarSensor.ping_median(3)));
   output.add("units", "cm");
-  return output.getJsonString();
+  return output;
 }
 
 // Get Limit Switch data in json style string
