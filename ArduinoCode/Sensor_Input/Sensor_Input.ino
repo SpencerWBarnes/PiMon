@@ -29,10 +29,16 @@ class JsonStringBuilder
       message.reserve((estimatedElementSize+4)*estimatedNumberOfElements);
     }
 
+    // Overload for string data, needs quotes \"
     void add(String propertyName, String propertyValue)
     {
-      // Name and value requires quotes, thus they must be escaped as \"
       message += "\""+ propertyName +"\":\""+ propertyValue +"\",";
+    }
+
+    // Overload for other JSON builders, uses getJsonString and no quotes
+    void add(String propertyName, JsonStringBuilder propertyValue)
+    {
+      message += "\""+ propertyName +"\":"+ propertyValue.getJsonString() +",";
     }
 
     template <class T>
@@ -46,11 +52,6 @@ class JsonStringBuilder
     {
       // Cut off last comma , and encompass in braces {}
       return "{"+ message.substring(0, message.length()-1) +"}";
-    }
-
-    friend String operator+ (const String& first, const JsonStringBuilder& second)
-    {
-      return first + second.getJsonString();
     }
 };
 
@@ -91,11 +92,11 @@ JsonStringBuilder getSonarData(NewPing sonarSensor)
 }
 
 // Get Limit Switch data in json style string
-String getLimitSwitchData(int switchPin)
+JsonStringBuilder getLimitSwitchData(int switchPin)
 {
   JsonStringBuilder output = JsonStringBuilder(1,5);
   output.add("data", digitalRead(switchPin));
-  return output.getJsonString();
+  return output;
 }
 
 // Aggregate data into message to be sent to Pi
