@@ -41,6 +41,12 @@ class JsonStringBuilder
       message += "\""+ propertyName +"\":"+ propertyValue.getJsonString() +",";
     }
 
+    // Overload for bool data, write as true/false not 1/0
+    void add(String propertyName, bool propertyValue)
+    {
+      message += "\""+ propertyName +"\":"+ String(propertyValue?"true":"false") +",";
+    }
+
     template <class T>
     void add(String propertyName, T propertyValue)
     {
