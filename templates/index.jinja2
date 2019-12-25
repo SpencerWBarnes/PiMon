@@ -116,7 +116,7 @@
         }
         // New message, refresh heartbeat
         else if (messageJson.hasOwnProperty("ack")) {
-          seqId = messageJson["ack"];
+          ackId = messageJson["ack"];
           watchDogTimer = (new Date()).getTime();
         }
         
