@@ -8,7 +8,7 @@
     <div class="col-sm-6">
       <div class="card">
         <div class="card-header">
-          <label class="mb-0" for="int_display">Integers</label>
+          <label class="mb-0" for="int_display">Numeric</label>
         </div>
         <div class="card-body">
           <!-- integer display -->
@@ -20,7 +20,7 @@
     <div class="col-sm-6 mt-4 mt-sm-0">
       <div class="card">
         <div class="card-header">
-          <label class="mb-0" for="bool_display">Booleans</label>
+          <label class="mb-0" for="bool_display">Boolean</label>
         </div>
         <div class="card-body">
           <!-- boolean display -->
@@ -64,7 +64,7 @@
     const $intDisplay = $('#int_display');
     const $heart = $('#heart');
     var logStreams = {'currentStream':''};
-    var seqNum = 0;
+    var ackId = 0;
     var watchDogTimer = 0;
 
     // connect to stream
@@ -101,25 +101,22 @@
     // update display, with delay
     function update() {
       let messages = xhr.responseText.split('\n');
-      messages.slice(position, -1).forEach(function (value) {
+      messages.slice(position, -1).forEach(function (messageString) {
 
-        // split the sensor data by semicolon
-        const sensorData = value.split(';');
+        // interpret the JSON object string
+        const messageJson = JSON.parse(messageString);
 
-        // First element should be time stamp
-        let data = sensorData[0].split(',');
-        // Old message
-        if (data[0] == 'seq' && seqNum == data[1]) {
-          // Dead connection
+        if (messageJson.hasOwnProperty("ack") && ackId == messageJson["ack"]) {
+          // No new data, may be dead
           if (!connectionAlive()) {
             heart.classList.remove("alive");
           }
           // Still live, but no updates
           return;
         }
-        // New message
-        else if (data[0] == 'seq') {
-          seqNum = data[1];
+        // New message, refresh heartbeat
+        else if (messageJson.hasOwnProperty("ack")) {
+          seqId = messageJson["ack"];
           watchDogTimer = (new Date()).getTime();
         }
         
@@ -129,43 +126,49 @@
         $intDisplay.val('');
         $boolDisplay.val('');
 
-        // iterate through sensor data
-        sensorData.forEach( interpretData );
+        // interperate the sensors
+        interpretData(messageJson);
       });
       position = messages.length - 1;
     }
 
-    function interpretData(dataString) {
-      if (dataString.trim().length < 1) return; // empty or whitespace
+    function interpretData(messageJson) {
+      for (const key in messageJson) {
+        // Skip ack
+        if (key == "ack") continue;
 
-      // split sensor data by comma
-      const data = dataString.split(',');
+        const data = messageJson[key];
+        const dataType = typeof(data);
 
-      // Skip time stamp data
-      if (data[0] == "seq") return;
+        switch (dataType) {
+          case "boolean":
+            $boolDisplay.val($boolDisplay.val() + key + ": " + data + "\n");
+            continue;
 
-      // is this actual data? (should have 4 values)
-      if (data.length > 3) {
-
-        if (data[1] === 'num') {
-          // number data
-          $intDisplay.val($intDisplay.val() + data[0] + ': ' + data[2] + ' ' + data[3] + '\n');
-
-        } else if (data[1] === 'bool') {
-          // boolean data
-          $boolDisplay.val($boolDisplay.val() + data[0] + ': ' + data[2] + ' ' + data[3] + '\n');
-
-        } else {
-          // Log data
-          // Modify approperiate stream
-          interpretLogData(data[0], data[2]);
-          // Reflow stream in case it was changed
-          updateOutDisplay(getCurrentStream());
+          case "number":
+            $intDisplay.val($intDisplay.val() + key + ": " + data + "\n");
+            continue;
+            
+          case "string":
+            // Modify approperiate stream
+            interpretLogData(key, data);
+            // Reflow stream in case it was changed
+            updateOutDisplay(getCurrentStream());
+            continue;
+        }
+        // Higher order objects
+        if (data.hasOwnProperty("units")) {
+          $intDisplay.val($intDisplay.val() + key + ": " + data["data"] + " " + data["units"] + "\n");
+          continue;
         }
 
-      } else if (data.length > 0) {
-        // wasn't actual data, just output string
-        interpretLogData("misc", data);
+        // Final default, unknown object format
+        let dataString = "";
+        for (const property in data) {
+          dataString += property + ": " + data[property] + ", ";
+        }
+        // Modify approperiate stream
+        interpretLogData(key, dataString);
         // Reflow stream in case it was changed
         updateOutDisplay(getCurrentStream());
       }
@@ -176,7 +179,7 @@
       if (!logStreams.hasOwnProperty(logName)) {
         logStreams[logName] = "";
 
-        let newNavPill = 
+        const newNavPill = 
         `<li class="nav-item">
           <p class="nav-link mb-0" id="` + logName + `" onclick="selectStream(this.innerText)">` + logName + `</p>
         </li>`
@@ -184,10 +187,10 @@
         document.getElementById("logNavBar").innerHTML += newNavPill;
       }
       
-      let dateObj = new Date();
-      let time = "[" +dateObj.getHours()+ ":" +dateObj.getMinutes()+ ":" +dateObj.getSeconds()+ "." +Math.floor(dateObj.getMilliseconds()/100)+ "]";
+      const dateObj = new Date();
+      const time = "[" +dateObj.getMinutes()+ ":" +dateObj.getSeconds()+ "." +Math.floor(dateObj.getMilliseconds()/100)+ "]";
       // Concat old and new data
-      let value = logStreams[logName] + time + ': ' + String(data) + '\n';
+      const value = logStreams[logName] + time + ': ' + String(data) + '\n';
       // Store only the 'limit' number of characters
       logStreams[logName] = value.substring(value.length - limit);
     }

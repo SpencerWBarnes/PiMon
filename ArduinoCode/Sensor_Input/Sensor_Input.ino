@@ -92,11 +92,9 @@ JsonStringBuilder getSonarData(NewPing sonarSensor)
 }
 
 // Get Limit Switch data in json style string
-JsonStringBuilder getLimitSwitchData(int switchPin)
+bool getLimitSwitchData(int switchPin)
 {
-  JsonStringBuilder output = JsonStringBuilder(1,5);
-  output.add("data", digitalRead(switchPin));
-  return output;
+  return digitalRead(switchPin);
 }
 
 // Aggregate data into message to be sent to Pi
@@ -106,8 +104,10 @@ String getSensorData()
   output.add("ack",millis()%2000);
 
   // This follows the JSON format
-  // sensor data: {"data":<data>,"units":<units>}
-  // message data: {"ack":<millis>,"sensorName":{sensorData},"sensorName":{sensorData}}\n
+  // Note that only numeric data has units, other sensors can be simple objects
+  // numeric data: "sensorName":{"data":<data>,"units":<units>}
+  // Simple data: "sensorName":<data>
+  // message data: {"ack":<millis>,"sensorName":{sensorData},"sensorName":<sensorData>}\n
   
   //Sonar sensors:
   // sonar
@@ -123,9 +123,9 @@ String getSensorData()
   //DEBUG PLEASE REMOVE
   if (dummyData%50 == 0)
   {
-    output.add("Dumb Chance", "{\"data\":"+String(dummyData)+"}");
+    output.add("Dumb Chance", String(dummyData));
   }
-  output.add("tick", "{\"data\":\".\"}");
+  output.add("tick", String("."));
 
   return output.getJsonString();
 }
