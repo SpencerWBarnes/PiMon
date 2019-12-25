@@ -117,12 +117,12 @@ String getSensorData()
   output.add("limitSwitch1", getLimitSwitchData(LIMITSWITCH1));
 
   //DEBUG PLEASE REMOVE
-  output.add("avgDummyTime", "{\"data\":"+String(avgDummyTime)+",\"units\":\"dummy\"}");
+  output.add("avgDummyTime", "{\"data\":"+String(avgDummyTime)+",\"units\":\"ms\"}");
 
   //DEBUG PLEASE REMOVE
-  if (dummyData%50 == 0)
+  if (dummyData == 59999)
   {
-    output.add("Dumb Chance", String(dummyData));
+    output.add("Dumb Chance", String(millis()%2000));
   }
   output.add("tick", String("."));
 
