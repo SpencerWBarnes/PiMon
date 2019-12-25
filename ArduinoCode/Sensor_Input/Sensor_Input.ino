@@ -74,7 +74,7 @@ void loop()
 {
   if (dummyData >= 60000)
   {
-    avgDummyTime = (avgDummyTime + (millis() - dummyStart))/2;
+    avgDummyTime = ((avgDummyTime*3) + (millis() - dummyStart))/4;
     dummyData = 0;
     dummyStart = millis();
   }
@@ -120,10 +120,6 @@ String getSensorData()
   output.add("avgDummyTime", "{\"data\":"+String(avgDummyTime)+",\"units\":\"ms\"}");
 
   //DEBUG PLEASE REMOVE
-  if (dummyData == 59999)
-  {
-    output.add("Dumb Chance", String(millis()%2000));
-  }
   output.add("tick", String("."));
 
   return output.getJsonString();
