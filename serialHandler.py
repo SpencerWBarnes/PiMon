@@ -14,7 +14,6 @@ def serialReader(portName):
     while True:
         readSerial = port.readline().decode('utf-8')
         red.set('msg', readSerial)
-        print(readSerial)
         sleep(0.1)
 
 
