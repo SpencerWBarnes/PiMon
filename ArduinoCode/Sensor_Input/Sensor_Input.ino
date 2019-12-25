@@ -9,7 +9,8 @@ NewPing sonar(SONAR1_trig, SONAR1_echo);
 
 //DEBUG PLEASE REMOVE Dummy variables for debugging
 unsigned dummyData = 0;
-bool dummyDataDirection = true;
+unsigned long avgDummyTime = 0;
+unsigned long dummyStart = 0;
 
 String incoming = "";
 String outgoing = "";
@@ -71,21 +72,13 @@ void setup()
 
 void loop() 
 {
-  if (dummyData <= 0)
+  if (dummyData >= 60000)
   {
-    // Start going up
-    dummyDataDirection = true;
+    avgDummyTime = (avgDummyTime + (millis() - dummyStart))/2;
+    dummyData = 0;
+    dummyStart = millis();
   }
-  else if (dummyData >= 60000)
-  {
-    // Start going down
-    dummyDataDirection = false;
-  }
-
-  if (dummyDataDirection)
-    dummyData++;
-  else
-    dummyData--;
+  dummyData++;
 }
 
 // Get Sonar data in json style string
@@ -124,7 +117,7 @@ String getSensorData()
   output.add("limitSwitch1", getLimitSwitchData(LIMITSWITCH1));
 
   //DEBUG PLEASE REMOVE
-  output.add("dummyData", "{\"data\":"+String(dummyData)+",\"units\":\"dummy\"}");
+  output.add("avgDummyTime", "{\"data\":"+String(avgDummyTime)+",\"units\":\"dummy\"}");
 
   //DEBUG PLEASE REMOVE
   if (dummyData%50 == 0)
