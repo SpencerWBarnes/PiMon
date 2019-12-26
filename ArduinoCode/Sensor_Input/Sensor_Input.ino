@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <NewPing.h>
-//DEBUG
+//DEBUG Library: Used for measuring Heap Fragmentation
 #include "MemoryInfo.h"
 
 #define SONAR1_trig 12
@@ -9,13 +9,14 @@
 
 NewPing sonar(SONAR1_trig, SONAR1_echo);
 
-//DEBUG PLEASE REMOVE Dummy variables for debugging
+//DEBUG Variables: Dummy variables for timer performance and testing logs
 unsigned dummyData = 0;
 unsigned long avgDummyTime = 0;
 unsigned long dummyStart = 0;
 
 String incoming;
 
+// Class to simplify creating JSON strings 
 class JsonStringBuilder
 {
   private:
@@ -123,21 +124,24 @@ void getSensorData(JsonStringBuilder &outgoing)
   //Limit switch sensors:
   // LIMITSWITCH1
   outgoing.add("limitSwitch1", getLimitSwitchData(LIMITSWITCH1));
-
-  //DEBUG PLEASE REMOVE
-  outgoing.add("tick", String("."));
-  if (dummyData % 50 == 0) {
-    outgoing.add("Dumb Chance", String(dummyData));
-  }
 }
 
-// Get various performance statistics
+//DEBUG Function: Get various performance statistics
 void getPerformanceData(JsonStringBuilder &outgoing)
 {
   // Show avg time to count dummyData
   outgoing.add("avgDummyTime", "{\"data\":"+String(avgDummyTime)+",\"units\":\"ms\"}");
   // Show heap fragmentation
   outgoing.add("Heap Fragmentation", "{\"data\":"+String(getFragmentation())+",\"units\":\"%\"}");
+}
+
+//DEBUG Function: Get data used just for testing puroses
+void getTestData(JsonStringBuilder &outgoing)
+{
+  outgoing.add("tick", String("."));
+  if (dummyData % 50 == 0) {
+    outgoing.add("Dumb Chance", String(dummyData));
+  }
 }
 
 // Serial input parser
@@ -157,8 +161,9 @@ void serialEvent()
   // command interpreters
   cmdGetSensors(incoming, outgoing);
 
-  //DEBUG
+  //DEBUG Calls to debugging Functions 
   getPerformanceData(outgoing);
+  getTestData(outgoing);
 
   // reply if desired
   if (!outgoing.empty())
