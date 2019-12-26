@@ -15,8 +15,6 @@ unsigned long avgDummyTime = 0;
 unsigned long dummyStart = 0;
 
 String incoming;
-incoming.reserve(50);
-incoming = "";
 
 class JsonStringBuilder
 {
@@ -69,6 +67,9 @@ void setup()
 {
   Serial.begin(115200);
   Serial.setTimeout(2);
+
+  incoming.reserve(50);
+  incoming = "";
 
   pinMode(LIMITSWITCH1, INPUT_PULLUP);
 }
