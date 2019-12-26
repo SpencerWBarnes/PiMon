@@ -124,6 +124,9 @@ String getSensorData()
 
   //DEBUG PLEASE REMOVE
   output.add("tick", String("."));
+  if (dummyData % 50 == 0) {
+    output.add("Dumb Chance", String(dummyData));
+  }
 
   return output.getJsonString();
 }
