@@ -61,6 +61,11 @@ class JsonStringBuilder
       // Cut off last comma , and encompass in braces {}
       return "{"+ message.substring(0, message.length()-1) +"}";
     }
+
+    bool empty()
+    {
+      return message == "";
+    }
 };
 
 void setup() 
@@ -101,10 +106,9 @@ bool getLimitSwitchData(int switchPin)
 }
 
 // Aggregate data into message to be sent to Pi
-String getSensorData()
+void getSensorData(JsonStringBuilder &outgoing)
 {
-  JsonStringBuilder output = JsonStringBuilder(4,12);
-  output.add("ack",millis()%2000);
+  outgoing.add("ack",millis()%2000);
 
   // This follows the JSON format
   // Note that only numeric data has units, other sensors can be simple objects
@@ -114,23 +118,21 @@ String getSensorData()
   
   //Sonar sensors:
   // sonar
-  output.add("sonar1",getSonarData(sonar));
+  outgoing.add("sonar1",getSonarData(sonar));
 
   //Limit switch sensors:
   // LIMITSWITCH1
-  output.add("limitSwitch1", getLimitSwitchData(LIMITSWITCH1));
+  outgoing.add("limitSwitch1", getLimitSwitchData(LIMITSWITCH1));
 
   //DEBUG PLEASE REMOVE
-  output.add("avgDummyTime", "{\"data\":"+String(avgDummyTime)+",\"units\":\"ms\"}");
-  output.add("Heap Fragmentation", "{\"data\":"+String(getFragmentation())+",\"units\":\"%\"}");
+  outgoing.add("avgDummyTime", "{\"data\":"+String(avgDummyTime)+",\"units\":\"ms\"}");
+  outgoing.add("Heap Fragmentation", "{\"data\":"+String(getFragmentation())+",\"units\":\"%\"}");
 
   //DEBUG PLEASE REMOVE
-  output.add("tick", String("."));
+  outgoing.add("tick", String("."));
   if (dummyData % 50 == 0) {
-    output.add("Dumb Chance", String(dummyData));
+    outgoing.add("Dumb Chance", String(dummyData));
   }
-
-  return output.getJsonString();
 }
 
 // Serial input parser
@@ -143,24 +145,27 @@ void serialEvent()
     incoming += readString;
   }
   incoming.trim();
+  // Constructor values are the expected 90% range. I expect it to be <= 6 properties with an average 
+  //  value of 10 bytes 90% of the time 
+  JsonStringBuilder outgoing = JsonStringBuilder(6,10);
 
-  String outgoing = "";
   // command interpreters
-  outgoing = cmdGetSensorData(incoming);
+  cmdGetSensors(incoming, outgoing);
 
   // reply if desired
-  if (outgoing != "")
+  if (!outgoing.empty())
   {
-    Serial.println(outgoing);
+    Serial.println(outgoing.getJsonString());
   }
   incoming = "";
 }
 
-String cmdGetSensorData(String command)
+bool cmdGetSensors(String command, JsonStringBuilder &outgoing)
 {
   if (command.compareTo("get sensors") == 0)
   {
-    return getSensorData();
+    getSensorData(outgoing);
+    return true;
   }
-  return "";
+  return false;
 }
