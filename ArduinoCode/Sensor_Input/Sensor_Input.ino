@@ -69,27 +69,33 @@ void serialEvent()
   // recieve command, only one allowed
   while (Serial.available())
   {
-    String readString = Serial.readString();
+    char readString = Serial.read();
     incoming += readString;
   }
-  incoming.trim();
-  // Constructor values are the expected 90% range. I expect it to be <= 6 properties with an average 
-  //  value of 10 bytes 90% of the time 
-  JsonStringBuilder outgoing = JsonStringBuilder(6,10);
 
-  // command interpreters
-  cmdGetSensors(incoming, outgoing);
-
-  //DEBUG Calls to debugging Functions 
-  getPerformanceData(outgoing);
-  getTestData(outgoing);
-
-  // reply if desired
-  if (!outgoing.empty())
+  // Interpret command once command ends
+  if (incoming.endsWith('\n'))
   {
-    Serial.println(outgoing.getJsonString());
+    incoming.trim().toLowerCase();
+    
+    // Constructor values are the expected 90% range. I expect it to be <= 6 properties with an average 
+    //  value of 10 bytes 90% of the time 
+    JsonStringBuilder outgoing = JsonStringBuilder(6,10);
+
+    // command interpreters
+    cmdGetSensors(incoming, outgoing);
+
+    //DEBUG Calls to debugging Functions 
+    getPerformanceData(outgoing);
+    getTestData(outgoing);
+
+    // reply if desired
+    if (!outgoing.empty())
+    {
+      Serial.println(outgoing.getJsonString());
+    }
+    incoming = "";
   }
-  incoming = "";
 }
 
 bool cmdGetSensors(String command, JsonStringBuilder &outgoing)
