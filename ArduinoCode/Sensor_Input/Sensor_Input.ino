@@ -74,10 +74,11 @@ void serialEvent()
   }
 
   // Interpret command once command ends
-  if (incoming.endsWith('\n'))
+  if (incoming.charAt(incoming.length()-1) == '\n')
   {
-    incoming.trim().toLowerCase();
-    
+    incoming.trim();
+    incoming.toLowerCase();
+
     // Constructor values are the expected 90% range. I expect it to be <= 6 properties with an average 
     //  value of 10 bytes 90% of the time 
     JsonStringBuilder outgoing = JsonStringBuilder(6,10);
