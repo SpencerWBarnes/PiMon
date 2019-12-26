@@ -19,7 +19,7 @@ def serialReader(portName):
 
 def triggerSensorData(portName):
     port = serial.Serial(portName, 115200)
-    command = "get sensors"
+    command = "get sensors\n"
     command = command.encode()
     while True:
         port.write(command)
