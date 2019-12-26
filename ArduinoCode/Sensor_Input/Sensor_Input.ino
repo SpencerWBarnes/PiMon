@@ -125,14 +125,19 @@ void getSensorData(JsonStringBuilder &outgoing)
   outgoing.add("limitSwitch1", getLimitSwitchData(LIMITSWITCH1));
 
   //DEBUG PLEASE REMOVE
-  outgoing.add("avgDummyTime", "{\"data\":"+String(avgDummyTime)+",\"units\":\"ms\"}");
-  outgoing.add("Heap Fragmentation", "{\"data\":"+String(getFragmentation())+",\"units\":\"%\"}");
-
-  //DEBUG PLEASE REMOVE
   outgoing.add("tick", String("."));
   if (dummyData % 50 == 0) {
     outgoing.add("Dumb Chance", String(dummyData));
   }
+}
+
+// Get various performance statistics
+void getPerformanceData(JsonStringBuilder &outgoing)
+{
+  // Show avg time to count dummyData
+  outgoing.add("avgDummyTime", "{\"data\":"+String(avgDummyTime)+",\"units\":\"ms\"}");
+  // Show heap fragmentation
+  outgoing.add("Heap Fragmentation", "{\"data\":"+String(getFragmentation())+",\"units\":\"%\"}");
 }
 
 // Serial input parser
@@ -151,6 +156,9 @@ void serialEvent()
 
   // command interpreters
   cmdGetSensors(incoming, outgoing);
+
+  //DEBUG
+  getPerformanceData(outgoing);
 
   // reply if desired
   if (!outgoing.empty())
