@@ -1,5 +1,7 @@
 #include <Arduino.h>
 #include <NewPing.h>
+//DEBUG
+#include "MemoryInfo.h"
 
 #define SONAR1_trig 12
 #define SONAR1_echo 11
@@ -118,6 +120,7 @@ String getSensorData()
 
   //DEBUG PLEASE REMOVE
   output.add("avgDummyTime", "{\"data\":"+String(avgDummyTime)+",\"units\":\"ms\"}");
+  output.add("Heap Fragmentation", "{\"data\":"+String(getFragmentation())+",\"units\":\"%\"}");
 
   //DEBUG PLEASE REMOVE
   output.add("tick", String("."));
