@@ -14,8 +14,9 @@ unsigned dummyData = 0;
 unsigned long avgDummyTime = 0;
 unsigned long dummyStart = 0;
 
-String incoming = "";
-String outgoing = "";
+String incoming;
+incoming.reserve(50);
+incoming = "";
 
 class JsonStringBuilder
 {
@@ -134,7 +135,7 @@ String getSensorData()
 // Serial input parser
 void serialEvent()
 {
-  // recieve input
+  // recieve command, only one allowed
   while (Serial.available())
   {
     String readString = Serial.readString();
@@ -142,6 +143,7 @@ void serialEvent()
   }
   incoming.trim();
 
+  String outgoing = "";
   // command interpreters
   outgoing = cmdGetSensorData(incoming);
 
@@ -149,7 +151,6 @@ void serialEvent()
   if (outgoing != "")
   {
     Serial.println(outgoing);
-    outgoing = "";
   }
   incoming = "";
 }
