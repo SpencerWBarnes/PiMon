@@ -36,8 +36,8 @@ void loop()
   //DEBUG Call to any code needed for testing
   testCode();
   //TEST
-  if (dummyData >= 60000)
-    addLog(String("Test.ticker"), String("."));
+  if (dummyData % 20000 == 0)
+    addLog(String("Test.ticker"), String(dummyData));
 }
 
 // Get Sonar data in json style string
