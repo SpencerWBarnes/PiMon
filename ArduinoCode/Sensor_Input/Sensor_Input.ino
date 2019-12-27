@@ -38,9 +38,9 @@ void loop()
   //TEST
   if (dummyData >= 60000)
   {
-    addLog(String("Test.ticker"), String("i"));
-    addLog(String("Test.tacker"), String("a"));
-    addLog(String("Test.tocker"), String("o"));
+    addLog(String("Test.ticker"), String(logData.length()));
+    addLog(String("Test.tacker"), String(logData.length()));
+    addLog(String("Test.tocker"), String(logData.length()));
   }
 }
 
