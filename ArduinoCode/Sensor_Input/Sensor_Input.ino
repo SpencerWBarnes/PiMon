@@ -5,18 +5,20 @@
 //DEBUG Library: For debug testing and performance testing
 #include "DebugAndPerformanceTest.h"
 
+// Constants
 #define SONAR1_trig 12
 #define SONAR1_echo 11
 #define LIMITSWITCH1 8
 
+// Globals
 NewPing sonar(SONAR1_trig, SONAR1_echo);
 String incoming;
 
 void setup() 
 {
   Serial.begin(115200);
-  Serial.setTimeout(2);
 
+  // Reserve a small size that I am confident we will not exceed
   incoming.reserve(50);
   incoming = "";
 
@@ -25,6 +27,7 @@ void setup()
 
 void loop() 
 {
+  //DEBUG Call to any code needed for testing
   testCode();
 }
 
@@ -44,6 +47,8 @@ bool getLimitSwitchData(int switchPin)
 // Aggregate data into message to be sent to Pi
 void getSensorData(JsonSerialStream &outgoing)
 {
+  // Add semi-random acknowledgement value that will be used as a unique 
+  //  ID for each message
   outgoing.addProperty("ack",(int)millis());
 
   // This follows the JSON format
@@ -53,12 +58,16 @@ void getSensorData(JsonSerialStream &outgoing)
   // message data: {"ack":<millis>,"sensorName":{sensorData},"sensorName":<sensorData>}\n
   
   //Sonar sensors:
+  // Since sonar data has multiple properties: data, units. It is a nested 
+  //  json object with internal properies to it. 
+  // It is important that the nested object is closed
   // sonar
   outgoing.addNestedObject("sonar1");
   getSonarData(sonar, outgoing);
   outgoing.closeNestedObject();
 
   //Limit switch sensors:
+  // Since switchdata has only one property it does not need to be nested
   // LIMITSWITCH1
   outgoing.addProperty("limitSwitch1", getLimitSwitchData(LIMITSWITCH1));
 }
@@ -66,7 +75,7 @@ void getSensorData(JsonSerialStream &outgoing)
 // Serial input parser
 void serialEvent()
 {
-  // recieve command, only one allowed
+  // Recieve data byte by byte
   while (Serial.available())
   {
     char readString = Serial.read();
@@ -74,15 +83,17 @@ void serialEvent()
   }
 
   // Interpret command once command ends
+  // Only one command allowed at a time
   if (incoming.charAt(incoming.length()-1) == '\n')
   {
+    // Make commands uniform, ignore casing and leading/trailling whitespace
     incoming.trim();
     incoming.toLowerCase();
 
-    // Once opened, it must be closed
+    // Once the stream is opened, it must be closed
     JsonSerialStream outgoing = JsonSerialStream();
 
-    // command interpreters
+    // Command interpreters
     cmdGetSensors(incoming, outgoing);
 
     //DEBUG Calls to debugging Functions 

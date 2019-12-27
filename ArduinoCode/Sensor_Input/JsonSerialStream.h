@@ -1,5 +1,20 @@
 // Format to JSON as data is printed to Serial
 
+// This class was written to transfer information off the Arduino using the
+//  JavaScript Object Notation (JSON) standard. This causes us to send 
+//  extra characters, take the time to format the data, and this class 
+//  takes executable space, but this standardization will improve usability
+//  on reciever's side as many libraries exist for many langauges to 
+//  "rehydrate" JSON strings into variables again.
+
+// Please note:
+//  - template functions are required to be implemented at declaration
+//  - the use of F() is a macro to save RAM
+//  - the use of & is Pass by Reference, saves RAM and time by giving the  
+//      actual String rather than a copy of the String
+//  - this class does not have proper format error checking
+
+// Prevents this file from being loaded multiple times
 #pragma once
 
 #include <Arduino.h>
@@ -9,7 +24,6 @@ class JsonSerialStream
   private:
     bool empty;
 
-    // Please note that template functions are required to be implemented at declaration
     // Most common process, add name to property or nested object
     template <class S>
     void addName(S name)
@@ -17,14 +31,24 @@ class JsonSerialStream
         // Prevent comma for first element 
         if (empty)
         {
-            Serial.print("\"");
+            Serial.print(F("\""));
             empty = false;
         }
         else
-            Serial.print(",\"");
+            Serial.print(F(",\""));
 
         Serial.print(name);
-        Serial.print("\":");
+        Serial.print(F("\":"));
+    }
+
+    // Handle types that are JavaScript strings: ex. String, char[], char
+    template <class S>
+    void addStringValue(S value)
+    {
+        // Add quotes for string
+        Serial.print(F("\""));
+        Serial.print(value);
+        Serial.print(F("\""));
     }
 
   public:
@@ -39,10 +63,7 @@ class JsonSerialStream
     void addProperty(S name, String &value)
     {
         addName(name);
-        // Add quotes for Strings
-        Serial.print("\"");
-        Serial.print(value);
-        Serial.print("\"");
+        addStringValue(value);
     }
 
     // Overload to handle string literals (const char*) values
@@ -50,10 +71,15 @@ class JsonSerialStream
     void addProperty(S name, const char value[])
     {
         addName(name);
-        // Add quotes for Strings
-        Serial.print("\"");
-        Serial.print(value);
-        Serial.print("\"");
+        addStringValue(value);
+    }
+
+    // Overload to handle single chars
+    template <class S>
+    void addProperty(S name, char value)
+    {
+        addName(name);
+        addStringValue(value);
     }
 
     // Overload to convert Bool values to true/false instead of 1/0
@@ -62,7 +88,7 @@ class JsonSerialStream
     {
         addName(name);
         // Ternary operator to simplify process
-        Serial.print( (value) ? "true" : "false" );
+        Serial.print( (value) ? F("true") : F("false") );
     }
 
     // General property
@@ -78,7 +104,7 @@ class JsonSerialStream
     void addNestedObject(S objectName)
     {
         addName(objectName);
-        Serial.print("{");
+        Serial.print(F("{"));
         // Behave as if empty for interior properties
         empty = true;
     }
