@@ -87,6 +87,8 @@ void getLogs(JsonSerialStream &outgoing)
     name = "";
     data = "";
   }
+  // Clear log data
+  logData = "";
 }
 
 unsigned int getLogSegment(String &segment, unsigned int i, unsigned int stop)
