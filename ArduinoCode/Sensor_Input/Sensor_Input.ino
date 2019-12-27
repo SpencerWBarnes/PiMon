@@ -37,7 +37,10 @@ void loop()
   testCode();
   //TEST
   if (dummyData % 20000 == 0)
+  {
     addLog(String("Test.ticker"), String("."));
+    addLog(String("Test.ticker"), String(".."));
+  }
 }
 
 // Get Sonar data in json style string
@@ -163,8 +166,8 @@ void serialEvent()
 
     //DEBUG Calls to debugging Functions 
     getTimingData(outgoing);
-    getMemoryData(outgoing);
-    getTestData(outgoing);
+    //getMemoryData(outgoing);
+    //getTestData(outgoing);
 
     outgoing.closeMessage();
     incoming = "";
