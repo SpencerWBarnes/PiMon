@@ -38,6 +38,7 @@ class Monitor
 
     // Add log comment to log book, adding two segments without checking 
     //  the length of the log (Possibly beyond log book capacity)
+    // Saves some RAM
     template <class S>
     void log(S logStream, String &data)
     {
@@ -49,6 +50,7 @@ class Monitor
 
     // Add log comment to log book, adding two segments without checking 
     //  the length of the log (Possibly beyond log book capacity)
+    // Saves some RAM
     template <class S, class T>
     void log(S logStream, T data)
     {

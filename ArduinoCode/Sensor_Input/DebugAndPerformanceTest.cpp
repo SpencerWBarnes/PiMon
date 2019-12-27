@@ -62,6 +62,6 @@ void getMemoryData(JsonSerialStream &outgoing)
 void getTestData(JsonSerialStream &outgoing)
 {
   if (dummyData % 50 == 0) {
-    outgoing.addPropertyAsString("Dumb Chance", dummyData);
+    monitor.log("Dumb Chance",dummyData);
   }
 }
