@@ -60,7 +60,6 @@ void getMemoryData(JsonSerialStream &outgoing)
 //DEBUG Function: Get various performance statistics
 void getTestData(JsonSerialStream &outgoing)
 {
-  outgoing.addProperty("tick", ".");
   if (dummyData % 50 == 0) {
     outgoing.addPropertyAsString("Dumb Chance", dummyData);
   }
