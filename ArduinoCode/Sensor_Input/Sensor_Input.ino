@@ -32,11 +32,6 @@ void loop()
 {
   //DEBUG Call to any code needed for testing
   testCode();
-  //TEST
-  if (dummyData >= 60000)
-  {
-    monitor.log(String("Test.ticker"), String("."));
-  }
 }
 
 // Aggregate data into message to be sent to Pi

@@ -4,6 +4,10 @@
 
 #include <Arduino.h>
 #include "JsonSerialStream.h"
+#include "Monitor.h"
+
+//Grab global monitor
+extern Monitor monitor;
 
 //DEBUG Library: Used for measuring Heap Fragmentation
 #include "MemoryInfo.h"
