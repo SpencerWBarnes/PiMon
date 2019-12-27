@@ -36,10 +36,11 @@ void loop()
   //DEBUG Call to any code needed for testing
   testCode();
   //TEST
-  if (dummyData % 20000 == 0)
+  if (dummyData >= 60000)
   {
-    addLog(String("Test.ticker"), String("."));
-    addLog(String("Test.ticker"), String(".."));
+    addLog(String("Test.ticker"), String("i"));
+    addLog(String("Test.tacker"), String("a"));
+    addLog(String("Test.tocker"), String("o"));
   }
 }
 
