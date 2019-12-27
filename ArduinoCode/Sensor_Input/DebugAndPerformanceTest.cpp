@@ -16,7 +16,7 @@ void testCode()
         avgDummyTime = ((avgDummyTime*3) + (millis() - dummyStart))/4;
         dummyData = 0;
         dummyStart = millis();
-        monitor.log(String("Test.ticker"), String("."));
+        monitor.log("Test.ticker", ".");
     }
     dummyData++;
 }
