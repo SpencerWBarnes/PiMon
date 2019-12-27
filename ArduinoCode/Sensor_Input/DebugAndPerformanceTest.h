@@ -22,5 +22,13 @@ void testCode();
 void getPerformanceData(JsonSerialStream &outgoing);
 
 // To be run in serialEvent
-//DEBUG Function: Get various performance statistics
+//DEBUG Function: Get timing statistics
+void getTimingData(JsonSerialStream &outgoing);
+
+// To be run in serialEvent
+//DEBUG Function: Get various RAM statistics
+void getMemoryData(JsonSerialStream &outgoing);
+
+// To be run in serialEvent
+//DEBUG Function: Get add test or dummy data
 void getTestData(JsonSerialStream &outgoing);

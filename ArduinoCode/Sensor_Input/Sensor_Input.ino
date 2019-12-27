@@ -34,7 +34,7 @@ void loop()
 // Get Sonar data in json style string
 void getSonarData(NewPing sonarSensor, JsonSerialStream &outgoing)
 {
-  outgoing.addProperty("data", sonarSensor.convert_cm(sonarSensor.ping_median(3)));
+  outgoing.addProperty("data", sonarSensor.ping_cm());
   outgoing.addProperty("units", "cm");
 }
 
@@ -97,8 +97,9 @@ void serialEvent()
     cmdGetSensors(incoming, outgoing);
 
     //DEBUG Calls to debugging Functions 
-    getPerformanceData(outgoing);
-    getTestData(outgoing);
+    getTimingData(outgoing);
+    //getMemoryData(outgoing);
+    //getTestData(outgoing);
 
     outgoing.closeMessage();
     incoming = "";

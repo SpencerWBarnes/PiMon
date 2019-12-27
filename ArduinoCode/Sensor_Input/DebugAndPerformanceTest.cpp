@@ -24,12 +24,25 @@ void testCode()
 //DEBUG Function: Get various performance statistics
 void getPerformanceData(JsonSerialStream &outgoing)
 {
+  getTimingData(outgoing);
+  getMemoryData(outgoing);
+}
+
+// To be run in serialEvent
+//DEBUG Function: Get timing statistics
+void getTimingData(JsonSerialStream &outgoing)
+{
   // Show avg time to count dummyData
   outgoing.addNestedObject("avgDummyTime");
   outgoing.addProperty("data", avgDummyTime);
   outgoing.addProperty("units", "ms");
   outgoing.closeNestedObject();
+}
 
+// To be run in serialEvent
+//DEBUG Function: Get various RAM statistics
+void getMemoryData(JsonSerialStream &outgoing)
+{
   // Show heap fragmentation
   outgoing.addNestedObject("Heap Fragmentation");
   outgoing.addProperty("data", getFragmentation());
