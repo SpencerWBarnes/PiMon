@@ -35,7 +35,7 @@ void loop()
   //TEST
   if (dummyData >= 60000)
   {
-    // addLog(String("Test.ticker"), String("."));
+    monitor.log(String("Test.ticker"), String("."));
   }
 }
 
@@ -68,7 +68,7 @@ void getSensorData(JsonSerialStream &outgoing)
 
   //Log data
   // Since we do not know what logs to add, it will handle adding them
-  // getLogs(outgoing);
+  monitor.getLogs(outgoing);
 }
 
 // Serial input parser

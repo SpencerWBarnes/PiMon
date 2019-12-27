@@ -19,11 +19,14 @@ def create_app():
     # create Flask application
     app = Flask(__name__)
 
-    # render SCSS
-    scss = Bundle('site.scss', 'heartbeat.css', filters='libsass', output='site.css')
+    # render static assets
+    bundles = {
+        'scss_all': Bundle('site.scss', filters='libsass', output='site.css'),
+        'css_all': Bundle('heartbeat.css', filters='cssmin', output='custom.css')
+    }
     assets = Environment(app)
     assets.url = app.static_url_path
-    assets.register('scss_all', scss)
+    assets.register(bundles)
 
     # initialize serialHandlers
     setupSerialHandlers()
