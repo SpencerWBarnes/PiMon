@@ -52,7 +52,7 @@ void getMemoryData(JsonSerialStream &outgoing)
   // Show Free memory
   outgoing.addNestedObject("Free memory");
   outgoing.addProperty("data", getTotalAvailableMemory());
-  outgoing.addProperty("units", "bytes?");
+  outgoing.addProperty("units", "bytes");
   outgoing.closeNestedObject();
 }
 
@@ -62,6 +62,6 @@ void getTestData(JsonSerialStream &outgoing)
 {
   outgoing.addProperty("tick", ".");
   if (dummyData % 50 == 0) {
-    outgoing.addProperty("Dumb Chance", dummyData);
+    outgoing.addPropertyAsString("Dumb Chance", dummyData);
   }
 }

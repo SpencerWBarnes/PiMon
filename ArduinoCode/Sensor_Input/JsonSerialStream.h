@@ -7,6 +7,12 @@
 //  on reciever's side as many libraries exist for many langauges to 
 //  "rehydrate" JSON strings into variables again.
 
+// This class makes extensive use of template functions. These are 
+//  functions in which a datatype is variable. This class makes use of this 
+//  in order to make functions independent of input type, essentially 
+//  acting as an overload for any datatype, and instead the work of sending
+//  the data by Serial is put upon .print() and not me.
+
 // Please note:
 //  - template functions are required to be implemented at declaration
 //  - the use of F() is a macro to save RAM
@@ -74,14 +80,6 @@ class JsonSerialStream
         addStringValue(value);
     }
 
-    // Overload to handle single chars
-    template <class S>
-    void addProperty(S name, char value)
-    {
-        addName(name);
-        addStringValue(value);
-    }
-
     // Overload to convert Bool values to true/false instead of 1/0
     template <class S>
     void addProperty(S name, bool value)
@@ -97,6 +95,14 @@ class JsonSerialStream
     {
         addName(name);
         Serial.print(value);
+    }
+
+    // Let user force data to be sent as string data
+    template <class S, class T>
+    void addPropertyAsString(S name, T value)
+    {
+        addName(name);
+        addStringValue(value);
     }
 
     // Open nested object, behaves like a new JSON message
