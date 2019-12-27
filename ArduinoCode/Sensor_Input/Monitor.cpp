@@ -41,8 +41,13 @@ bool Monitor::getLimitSwitchData(int switchPin)
 /*
   Logs
 */
-// Add log comment to log book, adding two segments
-bool Monitor::log(String logStream, String data)
+// Add log comment to log book, adding two segments with error checking
+// void log(S logStream, String &data)
+// void log(S logStream, T data)
+// bool logSafe(S logStream, T data)
+
+// Add log comment to log book, adding two segments with error checking
+bool Monitor::logSafe(String logStream, String data)
 {
   // if dangerously long
   if (logBook.length() + logStream.length() + logStream.length() >= logBookCapacity)
