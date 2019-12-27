@@ -1,7 +1,8 @@
 #include <Arduino.h>
 #include <NewPing.h>
 #include "JsonSerialStream.h"
-#include "Monitor.h"
+#include "SensorMonitor.h"
+#include "Logger.h"
 
 //DEBUG Library: For debug testing and performance testing
 #include "DebugAndPerformanceTest.h"
@@ -14,7 +15,7 @@
 // Globals
 NewPing sonar(SONAR1_trig, SONAR1_echo, 150);
 String incoming;
-Monitor monitor(500);
+Logger logger(500);
 
 void setup() 
 {
@@ -32,38 +33,6 @@ void loop()
 {
   //DEBUG Call to any code needed for testing
   testCode();
-}
-
-// Aggregate data into message to be sent to Pi
-void getSensorData(JsonSerialStream &outgoing)
-{
-  // Add semi-random acknowledgement value that will be used as a unique 
-  //  ID for each message
-  outgoing.addProperty("ack",(int)millis());
-
-  // This follows the JSON format
-  // Note that only numeric data has units, other sensors can be simple objects
-  // numeric data: "sensorName":{"data":<data>,"units":<units>}
-  // Simple data: "sensorName":<data>
-  // message data: {"ack":<millis>,"sensorName":{sensorData},"sensorName":<sensorData>}\n
-  
-  //Sonar sensors:
-  // Since sonar data has multiple properties: data, units. It is a nested 
-  //  json object with internal properies to it. 
-  // It is important that the nested object is closed
-  // sonar
-  outgoing.addNestedObject("sonar1");
-  monitor.getSonarObject(sonar, outgoing);
-  outgoing.closeNestedObject();
-
-  //Limit switch sensors:
-  // Since switchdata has only one property it does not need to be nested
-  // LIMITSWITCH1
-  outgoing.addProperty("limitSwitch1", monitor.getLimitSwitchData(LIMITSWITCH1));
-
-  //Log data
-  // Since we do not know what logs to add, it will handle adding them
-  monitor.getLogs(outgoing);
 }
 
 // Serial input parser
@@ -108,4 +77,36 @@ bool cmdGetSensors(String command, JsonSerialStream &outgoing)
     return true;
   }
   return false;
+}
+
+// Specify what data to send through Serial
+void getSensorData(JsonSerialStream &outgoing)
+{
+  // Add semi-random acknowledgement value that will be used as a unique 
+  //  ID for each message
+  outgoing.addProperty("ack",(int)millis());
+
+  // This follows the JSON format
+  // Note that only numeric data has units, other sensors can be simple objects
+  // numeric data: "sensorName":{"data":<data>,"units":<units>}
+  // Simple data: "sensorName":<data>
+  // message data: {"ack":<millis>,"sensorName":{sensorData},"sensorName":<sensorData>}\n
+  
+  //Sonar sensors:
+  // Since sonar data has multiple properties: data, units. It is a nested 
+  //  json object with internal properies to it. 
+  // It is important that the nested object is closed
+  // sonar
+  outgoing.addNestedObject("sonar1");
+  getSonarObject(sonar, outgoing);
+  outgoing.closeNestedObject();
+
+  //Limit switch sensors:
+  // Since switchdata has only one property it does not need to be nested
+  // LIMITSWITCH1
+  outgoing.addProperty("limitSwitch1", getLimitSwitchData(LIMITSWITCH1));
+
+  //Log data
+  // Since we do not know what logs to add, it will handle adding them
+  logger.getLogs(outgoing);
 }

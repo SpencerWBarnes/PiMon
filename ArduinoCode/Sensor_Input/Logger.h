@@ -9,10 +9,9 @@
 #pragma once
 
 #include <Arduino.h>
-#include <NewPing.h>
 #include "JsonSerialStream.h"
 
-class Monitor
+class Logger
 {
   private:
     // Large string to store logs
@@ -27,14 +26,7 @@ class Monitor
     unsigned int getLogSegment(String &segment, unsigned int i, unsigned int stop);
 
   public:
-    Monitor(int logSize);
-
-    // Add sonar data object from New Ping ultrasonic sensors to Stream
-    // {"data":<int>, "units":"cm"}
-    void getSonarObject(NewPing sonarSensor, JsonSerialStream &outgoing);
-
-    // Returns value of Arduino Pin wired to limit switch
-    bool getLimitSwitchData(int switchPin);
+    Logger(int logSize);
 
     // Add log comment to log book, adding two segments without checking 
     //  the length of the log (Possibly beyond log book capacity)

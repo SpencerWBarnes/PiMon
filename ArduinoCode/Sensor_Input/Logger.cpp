@@ -6,9 +6,9 @@
 //  Arduino board. To be used in conjunction with a JsonStream library such
 //  as JsonSerialStream.
 
-#include "Monitor.h"
+#include "Logger.h"
 
-Monitor::Monitor(int logBookSize)
+Logger::Logger(int logBookSize)
 {
   // Reserve large but not lethal size for logs
   logBook.reserve(logBookSize);
@@ -16,38 +16,13 @@ Monitor::Monitor(int logBookSize)
   logBookCapacity = logBookSize;
 }
 
-/*
-  Ultrasonic or Sonar Sensors
-*/
-// Add sonar data object from New Ping ultrasonic sensors to Stream
-// {"data":<int>, "units":"cm"}
-void Monitor::getSonarObject(NewPing sonarSensor, JsonSerialStream &outgoing)
-{
-  outgoing.addProperty("data", sonarSensor.ping_cm());
-  outgoing.addProperty("units", "cm");
-}
-
-
-/*
-  Limit switch or Pin input Sensors
-*/
-// Returns value of Arduino Pin wired to limit switch
-bool Monitor::getLimitSwitchData(int switchPin)
-{
-  return digitalRead(switchPin);
-}
-
-
-/*
-  Logs
-*/
 // Add log comment to log book, adding two segments with error checking
 // void log(S logStream, String &data)
 // void log(S logStream, T data)
 // bool logSafe(S logStream, T data)
 
 // Add log comment to log book, adding two segments with error checking
-bool Monitor::logSafe(String logStream, String data)
+bool Logger::logSafe(String logStream, String data)
 {
   // if dangerously long
   if (logBook.length() + logStream.length() + logStream.length() >= logBookCapacity)
@@ -61,7 +36,7 @@ bool Monitor::logSafe(String logStream, String data)
 }
 
 // Add all log comments to the Stream 
-void Monitor::getLogs(JsonSerialStream &outgoing)
+void Logger::getLogs(JsonSerialStream &outgoing)
 {
   unsigned int logLen = logBook.length();
   unsigned int i = 0;
@@ -89,7 +64,7 @@ void Monitor::getLogs(JsonSerialStream &outgoing)
 // Add a segment from the log book to passed in value, segments are 
 //  separated by \v. Returns the index after the segment's terminating
 //  character \v
-unsigned int Monitor::getLogSegment(String &segment, unsigned int i, unsigned int stop)
+unsigned int Logger::getLogSegment(String &segment, unsigned int i, unsigned int stop)
 {
   char currentChar;
   while (i < stop)
