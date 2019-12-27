@@ -35,6 +35,12 @@ void getPerformanceData(JsonSerialStream &outgoing)
   outgoing.addProperty("data", getFragmentation());
   outgoing.addProperty("units", "%");
   outgoing.closeNestedObject();
+
+  // Show Free memory
+  outgoing.addNestedObject("Free memory");
+  outgoing.addProperty("data", getTotalAvailableMemory());
+  outgoing.addProperty("units", "bytes?");
+  outgoing.closeNestedObject();
 }
 
 // To be run in serialEvent
