@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <NewPing.h>
-#include "JsonStringBuilder.h"
+#include "JsonSerialStream.h"
 
 //DEBUG Library: For debug testing and performance testing
 #include "DebugAndPerformanceTest.h"
@@ -29,12 +29,10 @@ void loop()
 }
 
 // Get Sonar data in json style string
-JsonStringBuilder getSonarData(NewPing sonarSensor)
+void getSonarData(NewPing sonarSensor, JsonSerialStream &outgoing)
 {
-  JsonStringBuilder output = JsonStringBuilder(2,6);
-  output.add("data", sonarSensor.convert_cm(sonarSensor.ping_median(3)));
-  output.add("units", String("cm"));
-  return output;
+  outgoing.addProperty("data", sonarSensor.convert_cm(sonarSensor.ping_median(3)));
+  outgoing.addProperty("units", "cm");
 }
 
 // Get Limit Switch data in json style string
@@ -44,9 +42,9 @@ bool getLimitSwitchData(int switchPin)
 }
 
 // Aggregate data into message to be sent to Pi
-void getSensorData(JsonStringBuilder &outgoing)
+void getSensorData(JsonSerialStream &outgoing)
 {
-  outgoing.add("ack",millis()%2000);
+  outgoing.addProperty("ack",(int)millis());
 
   // This follows the JSON format
   // Note that only numeric data has units, other sensors can be simple objects
@@ -56,11 +54,13 @@ void getSensorData(JsonStringBuilder &outgoing)
   
   //Sonar sensors:
   // sonar
-  outgoing.add("sonar1",getSonarData(sonar));
+  outgoing.addNestedObject("sonar1");
+  getSonarData(sonar, outgoing);
+  outgoing.closeNestedObject();
 
   //Limit switch sensors:
   // LIMITSWITCH1
-  outgoing.add("limitSwitch1", getLimitSwitchData(LIMITSWITCH1));
+  outgoing.addProperty("limitSwitch1", getLimitSwitchData(LIMITSWITCH1));
 }
 
 // Serial input parser
@@ -79,9 +79,8 @@ void serialEvent()
     incoming.trim();
     incoming.toLowerCase();
 
-    // Constructor values are the expected 90% range. I expect it to be <= 6 properties with an average 
-    //  value of 10 bytes 90% of the time 
-    JsonStringBuilder outgoing = JsonStringBuilder(6,10);
+    // Once opened, it must be closed
+    JsonSerialStream outgoing = JsonSerialStream();
 
     // command interpreters
     cmdGetSensors(incoming, outgoing);
@@ -90,16 +89,12 @@ void serialEvent()
     getPerformanceData(outgoing);
     getTestData(outgoing);
 
-    // reply if desired
-    if (!outgoing.empty())
-    {
-      Serial.println(outgoing.getJsonString());
-    }
+    outgoing.closeMessage();
     incoming = "";
   }
 }
 
-bool cmdGetSensors(String command, JsonStringBuilder &outgoing)
+bool cmdGetSensors(String command, JsonSerialStream &outgoing)
 {
   if (command.compareTo("get sensors") == 0)
   {

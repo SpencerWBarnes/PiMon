@@ -22,20 +22,27 @@ void testCode()
 
 // To be run in serialEvent
 //DEBUG Function: Get various performance statistics
-void getPerformanceData(JsonStringBuilder &outgoing)
+void getPerformanceData(JsonSerialStream &outgoing)
 {
   // Show avg time to count dummyData
-  outgoing.add("avgDummyTime", "{\"data\":"+String(avgDummyTime)+",\"units\":\"ms\"}");
+  outgoing.addNestedObject("avgDummyTime");
+  outgoing.addProperty("data", avgDummyTime);
+  outgoing.addProperty("units", "ms");
+  outgoing.closeNestedObject();
+
   // Show heap fragmentation
-  outgoing.add("Heap Fragmentation", "{\"data\":"+String(getFragmentation())+",\"units\":\"%\"}");
+  outgoing.addNestedObject("Heap Fragmentation");
+  outgoing.addProperty("data", getFragmentation());
+  outgoing.addProperty("units", "%");
+  outgoing.closeNestedObject();
 }
 
 // To be run in serialEvent
 //DEBUG Function: Get various performance statistics
-void getTestData(JsonStringBuilder &outgoing)
+void getTestData(JsonSerialStream &outgoing)
 {
-  outgoing.add("tick", String("."));
+  outgoing.addProperty("tick", ".");
   if (dummyData % 50 == 0) {
-    outgoing.add("Dumb Chance", String(dummyData));
+    outgoing.addProperty("Dumb Chance", dummyData);
   }
 }

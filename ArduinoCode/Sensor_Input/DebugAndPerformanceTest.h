@@ -3,7 +3,7 @@
 #pragma once
 
 #include <Arduino.h>
-#include "JsonStringBuilder.h"
+#include "JsonSerialStream.h"
 
 //DEBUG Library: Used for measuring Heap Fragmentation
 #include "MemoryInfo.h"
@@ -19,8 +19,8 @@ void testCode();
 
 // To be run in serialEvent
 //DEBUG Function: Get various performance statistics
-void getPerformanceData(JsonStringBuilder &outgoing);
+void getPerformanceData(JsonSerialStream &outgoing);
 
 // To be run in serialEvent
 //DEBUG Function: Get various performance statistics
-void getTestData(JsonStringBuilder &outgoing);
+void getTestData(JsonSerialStream &outgoing);
