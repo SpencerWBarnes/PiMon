@@ -37,7 +37,7 @@ def main():
   # establish serial communcation
   arduinoPort = getArduinoPort() #blocking
   arduinoSerial = serial.Serial(arduinoPort, baudrate=baudrate, timeout=serialTimeout)
-  redisConnection.publish(managerChannel, f'{arduinoPort} connected')
+  redisConnection.publish(managerChannel, '%s connected' % arduinoPort)
 
   for request in subscriptions.listen(): #blocking
     # Handle Requests
@@ -59,7 +59,7 @@ def main():
         # Close the now disconnected serial port
         arduinoSerial.close()
         # Inform that Arduino connection is dead
-        redisConnection.publish(managerChannel, f'{arduinoPort} disconnected')
+        redisConnection.publish(managerChannel, '%s disconnected' % arduinoPort)
 
         # Stop taking requests, no message is sent to the consumer processes
         #   it is important that consumers can recover from no response
@@ -68,7 +68,7 @@ def main():
         # Reestablish connection
         arduinoPort = getArduinoPort() #blocking
         arduinoSerial = serial.Serial(arduinoPort, baudrate=baudrate, timeout=serialTimeout)
-        redisConnection.publish(managerChannel, f'{arduinoPort} reconnected')
+        redisConnection.publish(managerChannel, '%s reconnected' % arduinoPort)
         # Reopen to requests
         subscriptions.subscribe(requestChannel)
   
