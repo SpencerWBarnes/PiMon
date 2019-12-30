@@ -33,6 +33,7 @@ def main():
   redisConnection = redis.StrictRedis()
   subscriptions = redisConnection.pubsub(ignore_subscribe_messages=True)
   subscriptions.subscribe(requestChannel)
+  subscriptions.subscribe(managerChannel)
 
   # establish serial communcation
   arduinoPort = getArduinoPort() #blocking
