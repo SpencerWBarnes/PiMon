@@ -30,7 +30,7 @@ def main():
   serialTimeout = 2
 
   # establish redis and pubsub connections 
-  redisConnection = redis.StrictRedis()
+  redisConnection = redis.StrictRedis(decode_responses=True)
   subscriptions = redisConnection.pubsub(ignore_subscribe_messages=True)
   subscriptions.subscribe(requestChannel)
   subscriptions.subscribe(managerChannel)
@@ -42,7 +42,7 @@ def main():
 
   for request in subscriptions.listen(): #blocking
     # Handle Requests
-    if request.channel == requestChannel:
+    if request[channel] == requestChannel:
       # Extract where to send Arduino's reply and the message to send
       # <channel to send reply>:<message to send to Arduino>
       replyChannel, message = request['data'].split(':',1)
@@ -74,7 +74,7 @@ def main():
         subscriptions.subscribe(requestChannel)
   
     # Handle management messages
-    if request.channel == managerChannel:
+    if request[channel] == managerChannel:
       command, parameters = request['data'].split(':', 2)
 
       # broadcast:<message to echo>
