@@ -21,6 +21,17 @@ enter your development folder and run `sudo pipenv shell`. Then,
 type `pipenv install libsass`. This bypasses `pipenv` but fixes the bug.
 
 
+## Setup
+The Pi must be configured as a wireless access point. This requires:
+* Wireless abilities, built in or as a dongle
+* Set up as a DNS server
+* Set up as a DHCP server
+* Set IP address of host device (Pi)
+
+In order to run the service on bootup, a script must be added to /etc/init.d/
+and another to be added to /etc/rc2.d/.
+
+
 ## Development
 PiMon is developed with the following:
 * Python 3.7 + pipenv
