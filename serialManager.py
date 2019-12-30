@@ -17,6 +17,8 @@ import time
     https://github.com/andymccurdy/redis-py#publish--subscribe
 * The true redisPy code and documentation
     https://redis-py.readthedocs.io/en/latest/_modules/redis/client.html
+* PySerial documentation
+   https://buildmedia.readthedocs.org/media/pdf/pyserial/latest/pyserial.pdf 
 '''
 
 
