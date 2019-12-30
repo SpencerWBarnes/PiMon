@@ -30,6 +30,7 @@ The Pi must be configured as a wireless access point. This requires:
 
 In order to run the service on bootup, a script must be added to /etc/init.d/
 and another to be added to /etc/rc2.d/.
+> RC scripts explained [here](https://docs.oracle.com/cd/E19683-01/806-4073/6jd67r96g/index.html)
 
 
 ## Development
@@ -44,7 +45,16 @@ You may need C++ Build Tools to install all packages.
 ## Usage
 PiMon runs on a Waitress server.
 
-Run the app my executing the following command in the dev folder:
+Run the app anywhere with:
+```
+sudo /etc/init.d/pimon start
+```
+and to stop the app:
+```
+sudo /etc/init.s/pimon stop
+```
+
+The app can also be run by executing the following command in the dev folder:
 ```
 sudo pipenv run python app.py
 ```
