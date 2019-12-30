@@ -117,8 +117,10 @@ def findArduinoPort():
 
 # Check that a given port is still listed as active
 def isPortAlive(port):
-  openPorts = list(serial.tools.list_ports.comports())
-  return port in openPorts
+  for livePort in serial.tools.list_ports.comports():
+    if port == livePort.device:
+      return True
+  return False
 
 # Blocking function until an Arduino port is found
 def getArduinoPort():
