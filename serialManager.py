@@ -45,7 +45,12 @@ def main():
     if request['channel'] == requestChannel:
       # Extract where to send Arduino's reply and the message to send
       # <channel to send reply>:<message to send to Arduino>
-      replyChannel, message = request['data'].split(':',1)
+      try:
+        replyChannel, message = request['data'].split(':',1)
+      except:
+        # Ignore malformed input
+        print('Malformed input: %s' % request)
+        continue
 
       if isPortAlive():
         # Send message
@@ -57,6 +62,7 @@ def main():
       
       # Arduino serial connection is dead
       else:
+        print('Serial port %s dead' % arduinoPort)
         # Close the now disconnected serial port
         arduinoSerial.close()
         # Inform that Arduino connection is dead
@@ -75,7 +81,11 @@ def main():
   
     # Handle management messages
     if request['channel'] == managerChannel:
-      command, parameters = request['data'].split(':', 1)
+      try:
+        command, parameters = request['data'].split(':', 1)
+      except:
+        command = ''
+        parameters = request['data']
 
       # broadcast:<message to echo>
       if command == 'broadcast':
