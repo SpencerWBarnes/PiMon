@@ -116,3 +116,6 @@ def getArduinoPort():
     time.sleep(1)
   return findArduinoPort()
   
+# Call main
+if __name__ == '__main__':
+    main()
