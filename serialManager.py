@@ -52,7 +52,7 @@ def main():
         print('Malformed input: %s' % request)
         continue
 
-      if isPortAlive():
+      if isPortAlive(arduinoPort):
         # Send message
         arduinoSerial.write(message.encode())
         # Wait for reposponse from Arduino
