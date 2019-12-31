@@ -40,4 +40,4 @@ def isPollAlive():
 
 def setupArduinoPolling(interval):
     # Spin up separate thread
-    Thread(target=serialReader, args=(interval,), daemon=True).start()
+    Thread(target=requestSensorData, args=(interval,), daemon=True).start()
