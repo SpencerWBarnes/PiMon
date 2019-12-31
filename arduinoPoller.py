@@ -36,7 +36,7 @@ def keepPollAlive():
 
 # To be used by requesting thread to keep polling
 def isPollAlive():
-    return global pollAlive
+    return pollAlive
 
 def setupArduinoPolling(interval):
     # Spin up separate thread
