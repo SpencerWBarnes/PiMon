@@ -53,6 +53,8 @@ def main():
         continue
 
       if isPortAlive(arduinoPort):
+        # Add line terminator
+        message += '\n'
         # Send message
         arduinoSerial.write(message.encode())
         # Wait for reposponse from Arduino

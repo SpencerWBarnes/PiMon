@@ -7,7 +7,7 @@ from flask import Flask, render_template, Response, send_from_directory
 from flask_assets import Environment, Bundle
 
 # import function to start reading/writing from serial port
-from serialHandler import setupSerialHandlers
+import arduinoPoller
 
 red = redis.StrictRedis()
 
@@ -25,8 +25,8 @@ def create_app():
     assets.url = app.static_url_path
     assets.register('scss_all', scss)
 
-    # initialize serialHandlers
-    setupSerialHandlers()
+    # Spin up polling thread
+    arduinoPoller.setupArduinoPolling(0.333)
 
     # route to favicon
     @app.route('/favicon.ico')
@@ -49,11 +49,12 @@ def create_app():
         def events():
             while True:
                 yield red.get('msg')
+                arduinoPoller.keepPollAlive()
                 time.sleep(.1)
 
         return Response(events(), mimetype='text/plain')
 
-    return app
+    return app 
 
 
 if __name__ == '__main__':
