@@ -25,12 +25,14 @@ def requestSensorData(interval):
         sleep(interval)
         # Always try to stop polling, consumer must actively call 
         #   keepPollAlive to continue polling
-        global pollAlive = False
+        global pollAlive 
+        pollAlive = False
 
 
 # To be used by app.py thread to keep polling Arduino
 def keepPollAlive():
-    global pollAlive = True
+    global pollAlive 
+    pollAlive = True
 
 # To be used by requesting thread to keep polling
 def isPollAlive():
