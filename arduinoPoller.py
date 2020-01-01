@@ -21,18 +21,23 @@ def requestSensorData(interval):
             # If the reply is good
             if reply != None and reply['type'] == 'message':
                 redisConnection.set('msg', reply['data'])
-                
+      
+            # Always try to stop polling
+            stopPolling()
+            
+        # Wait before sending new poll
+        # Consumer must actively keepPollAlive during this time to keep polling
         sleep(interval)
-        # Always try to stop polling, consumer must actively call 
-        #   keepPollAlive to continue polling
-        global pollAlive 
-        pollAlive = False
-
 
 # To be used by app.py thread to keep polling Arduino
 def keepPollAlive():
     global pollAlive 
     pollAlive = True
+
+# To be used by requesting thread to stop polling unless specifically told otherwise
+def stopPolling():
+    global pollAlive
+    pollAlive = False
 
 # To be used by requesting thread to keep polling
 def isPollAlive():
