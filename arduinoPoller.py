@@ -13,6 +13,9 @@ def requestSensorData(interval):
     replyChannel = "fromArduinoSensors"
     message = "get sensors"
 
+    # Subscribe to reply channels
+    subscriptions.subscribe(replyChannel)
+
     while True:
         # Only poll if alive
         if(isPollAlive()):
@@ -24,7 +27,7 @@ def requestSensorData(interval):
       
             # Always try to stop polling
             stopPolling()
-            
+
         # Wait before sending new poll
         # Consumer must actively keepPollAlive during this time to keep polling
         sleep(interval)
