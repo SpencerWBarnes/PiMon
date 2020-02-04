@@ -1,6 +1,5 @@
 *.idea/
 /static/.webassets-cache/
-*.log*
-.vscode/settings.json
 __pycache__/test.cpython-37.pyc
 *.json
+.vscode/*
