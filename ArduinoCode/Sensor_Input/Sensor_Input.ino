@@ -1,11 +1,11 @@
 #include <Arduino.h>
 #include <NewPing.h>
-#include "JsonSerialStream.h"
-#include "SensorMonitor.h"
-#include "Logger.h"
+#include "src/SubModules/JsonSerialStream/JsonSerialStream.h"
+#include "src/SensorMonitor.h"
+#include "src/Logger.h"
 
 //DEBUG Library: For debug testing and performance testing
-#include "DebugAndPerformanceTest.h"
+#include "src/Testing/DebugAndPerformanceTest.h"
 
 // Constants
 #define SONAR1_trig 12
