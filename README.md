@@ -8,6 +8,15 @@ Spencer Barnes, Jake Griesmer, Jordan Stremming, Tyler Whiticker
 
 
 ## Installation
+
+### Dependancies
+On the Pi:
+* Python3.7
+* Pipenv for python3
+* Redis server
+* SerialManager process _[GitHub here](https://github.com/MSUSeconRobotics/SerialManager.git)_
+
+### Installation Instruction
 This project uses **Python 3.7** and the **pipenv** package.
 To install Pipenv, run `pip3 install pipenv`.
 
