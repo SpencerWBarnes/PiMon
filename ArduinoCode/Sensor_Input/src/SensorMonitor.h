@@ -10,7 +10,7 @@
 
 #include <Arduino.h>
 #include <NewPing.h>
-#include "JsonSerialStream.h"
+#include "SubModules/JsonSerialStream/JsonSerialStream.h"
 
 // Add sonar data object from New Ping ultrasonic sensors to Stream
 // {"data":<int>, "units":"cm"}

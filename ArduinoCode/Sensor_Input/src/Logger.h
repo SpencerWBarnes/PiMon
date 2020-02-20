@@ -9,7 +9,7 @@
 #pragma once
 
 #include <Arduino.h>
-#include "JsonSerialStream.h"
+#include "SubModules/JsonSerialStream/JsonSerialStream.h"
 
 class Logger
 {

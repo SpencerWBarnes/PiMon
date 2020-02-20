@@ -3,8 +3,8 @@
 #pragma once
 
 #include <Arduino.h>
-#include "JsonSerialStream.h"
-#include "Logger.h"
+#include "../SubModules/JsonSerialStream/JsonSerialStream.h"
+#include "../Logger.h"
 
 //Grab global Logger
 extern Logger logger;

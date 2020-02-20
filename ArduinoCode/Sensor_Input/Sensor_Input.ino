@@ -16,6 +16,8 @@
 NewPing sonar(SONAR1_trig, SONAR1_echo, 150);
 String incoming;
 Logger logger(500);
+// Set the JSON stream to output onto Serial
+JsonSerialStream outgoing = JsonSerialStream(Serial);
 
 void setup() 
 {
@@ -53,8 +55,8 @@ void serialEvent()
     incoming.trim();
     incoming.toLowerCase();
 
-    // Once the stream is opened, it must be closed
-    JsonSerialStream outgoing = JsonSerialStream();
+    // Once the message is opened, it must be closed
+    outgoing.openMessage();
 
     // Command interpreters
     cmdGetSensors(incoming, outgoing);
