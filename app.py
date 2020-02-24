@@ -36,13 +36,13 @@ def create_app():
     @app.route('/')
     def home():
         """Page: home of site"""
-        return render_template('index.jinja2')
+        return render_template('index.html')
 
     @app.route("/stream/console")
     def console_stream():
         """Stream: continuous pipeline stream
         This stream is connected to by client via Javascript to constantly download messages (Responses) from the server.
-        See ./templates/index.jinja2 for Javascript code.
+        See ./templates/index.html for Javascript code.
 
         """
 

@@ -1,4 +1,4 @@
-{% extends "root.jinja2" %}
+{% extends "root.html" %}
 
 {% block title %}Home{% endblock %}
 
@@ -69,7 +69,7 @@
 
     // connect to stream
     const xhr = new XMLHttpRequest();
-    xhr.open('GET', '{{ url_for('console_stream') }}');
+    xhr.open('GET', "{{ url_for('console_stream') }}");
     xhr.send();
     let position = 0;
 
