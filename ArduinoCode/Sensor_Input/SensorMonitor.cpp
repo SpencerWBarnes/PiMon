@@ -51,9 +51,9 @@ void getGyroRotationObject(MPU6050 gyroSensor, JsonSerialStream &outgoing)
 void getGyroAccelerationObject(MPU6050 accelerometer, JsonSerialStream &outgoing)
 {
   int16_t x, y, z;
-  gyroSensor.getAcceleration(&x, &y, &z);
+  accelerometer.getAcceleration(&x, &y, &z);
 
-  outgoing.addProperty("scale", gyroSensor.getFullScaleAccelRange());
+  outgoing.addProperty("scale", accelerometer.getFullScaleAccelRange());
   outgoing.addProperty("x", x);
   outgoing.addProperty("y", y);
   outgoing.addProperty("z", z);
