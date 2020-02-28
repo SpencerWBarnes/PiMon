@@ -3,3 +3,5 @@
 __pycache__/test.cpython-37.pyc
 *.json
 .vscode/*
+
+ArduinoCode/Output/
