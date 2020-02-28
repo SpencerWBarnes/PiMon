@@ -61,7 +61,7 @@ void serialEvent()
     // Command interpreters
     cmdGetSensors(incoming, outgoing);
 
-    //DEBUG Calls to debugging Functions 
+    //DEBUG Calls to debugging Functions
     getTimingData(outgoing);
     //getMemoryData(outgoing);
     //getTestData(outgoing);
