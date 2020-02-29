@@ -1,8 +1,8 @@
 #include <Arduino.h>
 #include <NewPing.h>
 #include "src/SubModules/JsonSerialStream/JsonSerialStream.h"
-#include "src/SensorMonitor.h"
-#include "src/Logger.h"
+#include "src/SubModules/ArduinoMonitor/SensorMonitor.h"
+#include "src/SubModules/ArduinoMonitor/Logger.h"
 
 //DEBUG Library: For debug testing and performance testing
 #include "src/Testing/DebugAndPerformanceTest.h"

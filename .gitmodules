@@ -4,3 +4,6 @@
 [submodule "ArduinoCode/Sensor_Input/src/SubModules/JsonSerialStream"]
 	path = ArduinoCode/Sensor_Input/src/SubModules/JsonSerialStream
 	url = https://github.com/MSUSeconRobotics/JsonSerialStream.git
+[submodule "ArduinoCode/Sensor_Input/src/SubModules/ArduinoMonitor"]
+	path = ArduinoCode/Sensor_Input/src/SubModules/ArduinoMonitor
+	url = https://github.com/MSUSeconRobotics/ArduinoMonitor.git
