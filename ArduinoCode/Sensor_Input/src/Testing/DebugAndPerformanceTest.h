@@ -4,7 +4,7 @@
 
 #include <Arduino.h>
 #include "../SubModules/JsonSerialStream/JsonSerialStream.h"
-#include "../Logger.h"
+#include "../SubModules/ArduinoMonitor/Logger.h"
 
 //Grab global Logger
 extern Logger logger;
