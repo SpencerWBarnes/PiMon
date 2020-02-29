@@ -16,12 +16,14 @@ On the Pi:
 * Redis server
 * SerialManager process _[GitHub here](https://github.com/MSUSeconRobotics/SerialManager.git)_
 
+On the Arduino:
+* NewPing.h _Available in Arduino Library Manager_
+* JsonSerialStream.h _[GitHub here](https://github.com/MSUSeconRobotics/JsonSerialStream)_
+
 ### Installation Instruction
-This project uses **Python 3.7** and the **pipenv** package.
 To install Pipenv, run `pip3 install pipenv`.
 
-Clone this repository into a folder of your choosing and run
-`pipenv install`. This will install all necessary packages for this project.
+Clone this repository and its submodules into a folder of your choosing with `git clone --recurse-submodules https://github.com/SpencerWBarnes/PiMon.git`. Then navigate into the repository and run `sudo pipenv install`. This will install all necessary packages for the Pi.
 
 *This app will need to run as **root** to get port 80 access!*
 
@@ -31,14 +33,17 @@ type `pipenv install libsass`. This bypasses `pipenv` but fixes the bug.
 
 
 ## Setup
-The Pi must be configured as a wireless access point. This requires:
-* Wireless abilities, built in or as a dongle
-* Set up as a DNS server
-* Set up as a DHCP server
-* Set IP address of host device (Pi)
+The Pi must be configured:
+1) As a wireless access point. Requiring:
+   * Wireless abilities, built in or as a dongle
+   * Set up as a DNS server
+   * Set up as a DHCP server
+   * Set IP address of host device (Pi)
+2) With Redis server
+3) With SerialManager _[GitHub here](https://github.com/MSUSeconRobotics/SerialManager.git)_
 
-In order to run the service on bootup, a script must be added to /etc/init.d/
-and another to be added to /etc/rc2.d/.
+In order to run services on bootup, a script must be added to `/etc/init.d/`
+and the run `sudo update-rc.d <FileName> defaults`.
 > RC scripts explained [here](https://docs.oracle.com/cd/E19683-01/806-4073/6jd67r96g/index.html)
 
 

@@ -17,6 +17,10 @@ void testCode()
         dummyData = 0;
         dummyStart = millis();
         logger.log("Test.ticker", ".");
+        if (digitalRead(8))
+        {
+          logger.log("Switch","Collision");
+        }
     }
     dummyData++;
 }

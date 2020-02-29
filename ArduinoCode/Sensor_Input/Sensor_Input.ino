@@ -1,11 +1,11 @@
 #include <Arduino.h>
 #include <NewPing.h>
-#include "JsonSerialStream.h"
-#include "SensorMonitor.h"
-#include "Logger.h"
+#include "src/SubModules/JsonSerialStream/JsonSerialStream.h"
+#include "src/SensorMonitor.h"
+#include "src/Logger.h"
 
 //DEBUG Library: For debug testing and performance testing
-#include "DebugAndPerformanceTest.h"
+#include "src/Testing/DebugAndPerformanceTest.h"
 
 // Constants
 #define SONAR1_trig 12
@@ -16,6 +16,8 @@
 NewPing sonar(SONAR1_trig, SONAR1_echo, 150);
 String incoming;
 Logger logger(500);
+// Set the JSON stream to output onto Serial
+JsonSerialStream outgoing = JsonSerialStream(Serial);
 
 void setup() 
 {
@@ -53,13 +55,13 @@ void serialEvent()
     incoming.trim();
     incoming.toLowerCase();
 
-    // Once the stream is opened, it must be closed
-    JsonSerialStream outgoing = JsonSerialStream();
+    // Once the message is opened, it must be closed
+    outgoing.openMessage();
 
     // Command interpreters
     cmdGetSensors(incoming, outgoing);
 
-    //DEBUG Calls to debugging Functions 
+    //DEBUG Calls to debugging Functions
     getTimingData(outgoing);
     //getMemoryData(outgoing);
     //getTestData(outgoing);

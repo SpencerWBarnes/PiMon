@@ -10,8 +10,8 @@
 
 #include <Arduino.h>
 #include <NewPing.h>
-#include "JsonSerialStream.h"
 #include "src/SubModules/MPU6050/MPU6050.h"
+#include "SubModules/JsonSerialStream/JsonSerialStream.h"
 
 // Add sonar data object from New Ping ultrasonic sensors to Stream
 // {"data":<int>, "units":"cm"}
