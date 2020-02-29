@@ -29,3 +29,32 @@ bool getLimitSwitchData(int switchPin)
 {
   return digitalRead(switchPin);
 }
+
+/*
+  MPU6050 Gyro and Acceleratometer Sensors
+*/
+// Add gyro angular velocity object from MPU6050 sensors to Stream
+// {"scale":<uint8_t>, "x":<int16_t>, "y":<int16_t>, "z":<int16_t>}
+void getGyroRotationObject(MPU6050 gyroSensor, JsonSerialStream &outgoing)
+{
+  int16_t x, y, z;
+  gyroSensor.getRotation(&x, &y, &z);
+
+  outgoing.addProperty("scale", gyroSensor.getFullScaleGyroRange());
+  outgoing.addProperty("x", x);
+  outgoing.addProperty("y", y);
+  outgoing.addProperty("z", z);
+}
+
+// Add gyro axial acceleration object from MPU6050 sensors to Stream
+// {"x":<int16_t>, "y":<int16_t>, "z":<int16_t>}
+void getGyroAccelerationObject(MPU6050 accelerometer, JsonSerialStream &outgoing)
+{
+  int16_t x, y, z;
+  accelerometer.getAcceleration(&x, &y, &z);
+
+  outgoing.addProperty("scale", accelerometer.getFullScaleAccelRange());
+  outgoing.addProperty("x", x);
+  outgoing.addProperty("y", y);
+  outgoing.addProperty("z", z);
+}
