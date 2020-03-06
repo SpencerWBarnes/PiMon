@@ -60,7 +60,21 @@ function update() {
 
 
 
-function updateGraphStream()
+function updateGraphStream_Keys(){
+  // This adds newly found sensors to the GraphStream dictionary
+}
+
+function writeGraphStream_ValuestoNull(){
+  // This writes Nulls to each key within the GraphStream dictionary
+  // If the key gets updated within the messageJson, the Null is overwritten
+  // If the key is not within the messageJson, the Null remains
+}
+
+function updateGraphStream_ValueArrays(key, value){
+  // This function updates the array for each key within the GraphStream Dictionary
+  // This should overwrite the Nulls with the current data if it exists
+}
+
 
 
 
@@ -74,13 +88,23 @@ function interpretData(messageJson) {
     const data = messageJson[key];
     const dataType = typeof(data);
 
+    // This is where we should call the following functions
+    // updateGraphStream_Keys()
+    // writeGraphStream_ValuestoNull()
+
+    // This makes sure that they are set before the newest message is parsed
+    // the actual values for the GraphStream are updated right after this function completes
+
+
     switch (dataType) {
       case "boolean":
         $boolDisplay.val($boolDisplay.val() + key + ": " + data + "\n");
+        updateGraphStream_ValueArrays(key, data);
         continue;
 
       case "number":
         $intDisplay.val($intDisplay.val() + key + ": " + data + "\n");
+        updateGraphStream_ValueArrays(key, data);
         continue;
         
       case "string":
@@ -93,6 +117,7 @@ function interpretData(messageJson) {
     // Higher order objects
     if (data.hasOwnProperty("units")) {
       $intDisplay.val($intDisplay.val() + key + ": " + data["data"] + " " + data["units"] + "\n");
+      updateGraphStream_ValueArrays(key, data);
       continue;
     }
 
