@@ -60,19 +60,47 @@ function update() {
 
 
 
-function updateGraphStream_Keys(){
+function updateGraphStream_Keys(sensorKey){
   // This adds newly found sensors to the GraphStream dictionary
+  // If key already exists, continue
+  // else, add the new key to the dictionary
+  var exists = false;
+  for (const key in GraphStream){
+    if (key == sensorKey){
+      exists = true;
+      break;
+    }
+
+    else {
+      exists = false;
+    }
+  }
+
+  if (exists == false){
+    GraphStream[sensorKey] = [];
+  }
+
 }
 
 function writeGraphStream_ValuestoNull(){
   // This writes Nulls to each key within the GraphStream dictionary
   // If the key gets updated within the messageJson, the Null is overwritten
   // If the key is not within the messageJson, the Null remains
+
+  // for key in graphstream
+  // if size of array is larger than (x)
+  // shift() array
+  // push() null
+  // else
+  // push() null
 }
 
 function updateGraphStream_ValueArrays(key, value){
   // This function updates the array for each key within the GraphStream Dictionary
   // This should overwrite the Nulls with the current data if it exists
+
+  // pop() the null value off the end of the key array
+  // push() the value to the key array
 }
 
 
@@ -81,6 +109,12 @@ function updateGraphStream_ValueArrays(key, value){
 
 
 function interpretData(messageJson) {
+
+  // for each message, append null to each key currently in the GraphStream
+  // This makes sure that they are set before the newest message is parsed
+  // the actual values for the GraphStream are updated during the case statement
+  writeGraphStream_ValuestoNull();
+
   for (const key in messageJson) {
     // Skip ack
     if (key == "ack") continue;
@@ -90,10 +124,7 @@ function interpretData(messageJson) {
 
     // This is where we should call the following functions
     // updateGraphStream_Keys()
-    // writeGraphStream_ValuestoNull()
-
-    // This makes sure that they are set before the newest message is parsed
-    // the actual values for the GraphStream are updated right after this function completes
+    updateGraphStream_Keys(key);
 
 
     switch (dataType) {
