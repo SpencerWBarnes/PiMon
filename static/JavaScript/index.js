@@ -60,17 +60,7 @@ function update() {
 
 
 
-// function appendNull(messageJson) {
-//   for (const key in messageJson) {
-//     // Skip ack
-//     if (key == "ack") continue;
-
-//     messageJson[key] = null
-//   }
- 
-
-// }
-
+function updateGraphStream()
 
 
 
