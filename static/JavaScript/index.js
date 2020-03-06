@@ -11,8 +11,8 @@ function selectStream(newStream) {
   updateOutDisplay(newStream);
 }
 
-function updateOutDisplay(steamName) {
-  $outDisplay.val(logStreams[steamName]);
+function updateOutDisplay(streamName) {
+  $outDisplay.val(logStreams[streamName]);
 
   if ($inAutoScroll.hasClass('active'))
     $outDisplay.scrollTop($outDisplay[0].scrollHeight);
@@ -56,6 +56,25 @@ function update() {
   });
   position = messages.length - 1;
 }
+
+
+
+
+// function appendNull(messageJson) {
+//   for (const key in messageJson) {
+//     // Skip ack
+//     if (key == "ack") continue;
+
+//     messageJson[key] = null
+//   }
+ 
+
+// }
+
+
+
+
+
 
 function interpretData(messageJson) {
   for (const key in messageJson) {
