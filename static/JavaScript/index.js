@@ -89,10 +89,25 @@ function writeGraphStream_ValuestoNull(){
 
   // for key in graphstream
   // if size of array is larger than (x)
-  // shift() array
-  // push() null
+  // shift() array - removes the first in array (oldest)
+  // push() null - appends null as the newest value
+
   // else
   // push() null
+
+  for (const key in GraphStream){
+
+    if (GraphStream.length() > 10){
+      GraphStream[key].shift();
+      GraphStream[key].push(null);
+    }
+
+    else{
+      GraphStream[key].push(null);
+    }
+  }
+
+
 }
 
 function updateGraphStream_ValueArrays(key, value){
@@ -101,6 +116,12 @@ function updateGraphStream_ValueArrays(key, value){
 
   // pop() the null value off the end of the key array
   // push() the value to the key array
+  // else
+  // push() null
+
+  GraphStream[key].pop()
+  GraphStream[key].push(value)
+
 }
 
 
@@ -113,6 +134,9 @@ function interpretData(messageJson) {
   // for each message, append null to each key currently in the GraphStream
   // This makes sure that they are set before the newest message is parsed
   // the actual values for the GraphStream are updated during the case statement
+
+  // This line below might be better to use if the other fails
+  // GraphStream.forEach(writeGraphStream_ValuestoNull());
   writeGraphStream_ValuestoNull();
 
   for (const key in messageJson) {
