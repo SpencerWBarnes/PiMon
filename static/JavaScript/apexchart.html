@@ -56,12 +56,15 @@
   // The Tick interval represents 1 unit at a time; seconds
   // X Axis Range is how many units are going to display on the graph
   var TICKINTERVAL = 1
-  let XAXISRANGE = 10
+  let XAXISRANGE = 15
+
+  var testcyclenumber = (XAXISRANGE*1000)
 
   function getDayWiseTimeSeries(baseval, count, yrange) {
     
-    var i = 0;
-    while (i <= count) {
+    var i = -1;
+
+    while (i < count) {
       var x = baseval;
       var y = Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min;
   
@@ -75,20 +78,20 @@
     }
   }
   
-  getDayWiseTimeSeries(0, XAXISRANGE, {
+  getDayWiseTimeSeries(StartTime, XAXISRANGE, {
     min: 10,
     max: 90
   })
   
   function getNewSeries(baseval, yrange) {
     var NextTimeChecked = baseval + TICKINTERVAL;
-    StartTime = NextTimeChecked
+    StartTime = NextTimeChecked;
   
-  for(var i = 0; i< data.length - XAXISRANGE; i++) {
+  for(var i = 0; i<= data.length - XAXISRANGE; i++) {
       // IMPORTANT
       // we reset the x and y of the data which is out of drawing area
       // to prevent memory leaks
-      data[i].x = NextTimeChecked - XAXISRANGE - TICKINTERVAL
+      data[i].x = NextTimeChecked - XAXISRANGE
       data[i].y = 0
     }
 
@@ -102,7 +105,7 @@
   
   function resetData(){
     // Alternatively, you can also reset the data at certain intervals to prevent creating a huge series 
-    data = data.slice(data.length - 10, data.length);
+    data = data.slice(data.length - XAXISRANGE, data.length);
   }
   </script>
   </head>
@@ -112,96 +115,184 @@
 
     <script>
       
+
+
+        // These are formating guidelines that the chart has to adhere to
+        // They need to be placed above where the chart is initialized
+        // This allows the chart to know how it needs to be rendered
         var options = {
+
           series: [{
-          data: data.slice()
-        }],
+            data: data.slice()
+            }],
+
           chart: {
-          id: 'realtime',
-          height: 350,
-          type: 'line',
-          animations: {
-            enabled: true,
-            easing: 'linear',
-            dynamicAnimation: {
-              speed: 1000
-            }
-          },
-          toolbar: {
-            show: false
-          },
-          zoom: {
-            enabled: false
-          }
-        },
-        dataLabels: {
-          enabled: false
-        },
-        stroke: {
-          curve: 'smooth'
-        },
-        title: {
-          text: 'Sensor Graph',
-          align: 'left'
-        },
-        markers: {
-          size: 0
-        },
-        xaxis: {
-          type: 'numeric',
-          range: XAXISRANGE,
-          axisTicks: {
-            show: true,
-            borderType: 'solid',
-            color: '#78909C',
-            height: 6,
-            offsetX: 0,
-            offsetY: 0
+            id: 'realtime',
+            height: 350,
+            type: 'line',
+            animations: {
+              enabled: true,
+              easing: 'linear',
+              dynamicAnimation: {
+                speed: 1000
+                }
+              },
+
+            toolbar: {
+              show: false
+              },
+
+            zoom: {
+              enabled: false
+              }
+
             },
 
-            tickAmount: XAXISRANGE,
-            tickPlacement: 'on',
-            min: undefined,
-            max: undefined,
-            range: undefined,
-            floating: false,
-            position: 'bottom',
-            title: {
-                text: 'seconds',
-                offsetX: 10,
-                offsetY: 0,
-                style: {
-                    color: undefined,
-                    fontSize: '12px',
-                    fontFamily: 'Helvetica, Arial, sans-serif',
-                    fontWeight: 600,
-                    cssClass: 'apexcharts-xaxis-title',
-                },
-              },
-        },
-        yaxis: {
-          max: 100
-        },
-        legend: {
-          show: false
-        },
-        };
+          // This looks stupid with dynamic graph animations. if you enable it, turn off the animation
+          // even then, it looks wonky
+          dataLabels: {
+            enabled: false,
+            enabledOnSeries: undefined,
+            formatter: function (val, opts) {
+                return val
+            },
+            textAnchor: 'middle',
+            distributed: false,
+            offsetX: 0,
+            offsetY: 0,
+            style: {
+                fontSize: '14px',
+                fontFamily: 'Helvetica, Arial, sans-serif',
+                fontWeight: 'bold',
+                colors: undefined
+            },
+            background: {
+              enabled: true,
+              foreColor: '#fff',
+              padding: 4,
+              borderRadius: 2,
+              borderWidth: 1,
+              borderColor: '#fff',
+              opacity: 0.9,
+              dropShadow: {
+                enabled: false,
+                top: 1,
+                left: 1,
+                blur: 1,
+                color: '#000',
+                opacity: 0.45
+              }
+            },
+            dropShadow: {
+                enabled: false,
+                top: 1,
+                left: 1,
+                blur: 1,
+                color: '#000',
+                opacity: 0.45
+            }
+          },
 
+          stroke: {
+            curve: 'smooth'
+            },
+
+          title: {
+            text: 'Sensor Graph',
+            align: 'left'
+            },
+
+          markers: {
+            size: 0
+            },
+
+          xaxis: {
+            // Set to category instead of numeric to remove float values
+            type: 'category',
+            axisTicks: {
+              show: true,
+              borderType: 'solid',
+              color: '#78909C',
+              height: 6,
+              offsetX: 0,
+              offsetY: 0
+              },
+
+              tickAmount: XAXISRANGE,
+              tickPlacement: 'on',
+              min: undefined,
+              max: undefined,
+              range: undefined,
+              floating: false,
+              position: 'bottom',
+              title: {
+                  text: 'seconds',
+                  offsetX: 0,
+                  offsetY: 0,
+                  style: {
+                      color: undefined,
+                      fontSize: '12px',
+                      fontFamily: 'Helvetica, Arial, sans-serif',
+                      fontWeight: 600,
+                      cssClass: 'apexcharts-xaxis-title',
+                      },
+                  },
+            },
+
+          yaxis: {
+            // changing this value to undefined makes the max change. its dynamic
+            max: 100
+            },
+
+          legend: {
+            show: true
+            },
+
+          };
+
+
+
+        // The Following Establishes the graph and renders it on the screen
         var chart = new ApexCharts(document.querySelector("#chart"), options);
         chart.render();
       
       
         window.setInterval(function () {
+
+        // This is the function called once every 1000 (1 second)
+        // Anything that you would want done to the graph continuously should be stated here
+
+        // This function gets new data for the graph
         getNewSeries(StartTime, {
           min: 10,
           max: 90
+        })
+        
+        // This function actually changes the graph data
+        chart.updateSeries([{
+          data: data
+        }])
+
+      }, 1000)
+
+
+      // This runs once every x axis cycle
+      // If the axis size is 10 seconds, it runs every 10 seconds
+      // It resets the data array so that it doesnt clog memory
+      window.setInterval(function () {
+        
+        getNewSeries(StartTime, {
+          NULL
         })
       
         chart.updateSeries([{
           data: data
         }])
-      }, 1000)
-      
+
+        resetData()
+      }, testcyclenumber)
+
+
     </script>
 
     
