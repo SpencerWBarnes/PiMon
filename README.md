@@ -63,6 +63,8 @@ PiMon is developed with the following:
 
 You may need C++ Build Tools to install all packages.
 
+If you want an explanation or description of the code, reference the [Code Explained doc](/CodeExplained.md).
+
 ## Usage
 PiMon runs on a Python Waitress server. The webpage's address is `192.168.1.1`
 

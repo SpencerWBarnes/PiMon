@@ -1,17 +1,20 @@
 # PiMon's code explained
 
+This document is to give some explanation of how the code was designed, what is necessary, what the different parts do, and answer some questions of why choices were made.
+
+It may be incomplete and you may find places you could improve, to which you are encouraged to reach out to ask questions to add to this document.
+
+If you want a user's guide rather than development guide, go to the [ReadMe](/README.md).
+
 ## Inital Setup
 
 #### Hardware
 
 <details> <summary> Expand </summary> 
 
-* Arduino
-  * A low level microcontroller that works closely with hardware (Uno, Mega, Due). These devices are highly limited memory, single thread, and slow. Written in Arduino C.
-* Raspberry Pi
-  * A high level microcomputer. Has moderate memory, multiple threads, and fast. Written in Python.
-* A client
-  * This is any device connected to the website (phone, laptop, Pi). Uses a browser to access, view, and run the website. Written in JavaScript, CSS, HTML.
+* **Arduino** - a low level microcontroller that works closely with hardware (Uno, Mega, Due). These devices are highly limited memory, single thread, and slow. Written in Arduino C.
+* **Raspberry Pi** - a high level microcomputer. Has moderate memory, multiple threads, and fast. Written in Python.
+* **A client** - this is any device connected to the website (phone, laptop, Pi). Uses a browser to access, view, and run the website. Written in JavaScript, CSS, HTML.
 
 </details><br>
 
@@ -31,8 +34,8 @@ Raspberry Pi
 
 Client
 * Webpage HTML: templates/root.html **and** templates/index.html
-* Webpage CSS: static/
 * Webpage JavaScript: static/JavaScript/
+* Webpage CSS: static/
 
 </details><br>
 
@@ -41,7 +44,7 @@ Client
 <details> <summary> Expand </summary> 
 
 #### Arduino
-Due to the Arduino having limited capability, its code must be written with the intent of being used with PiMon. Its code must follow a similar structure to that found in Sensor_Input.py. The Pi will send the command "get sensors\n" to the Arduino, and it must catch this command with serialEvent() _(this is a reserved function name for this purpose)_. Then the Arduino must interpret and respond with whatever data it wishes. This data will be used by PiMon.
+Due to the Arduino having limited capability, its code must be written with the intent of being used with PiMon. Its code must follow a similar structure to that found in Sensor_Input.py. The Pi will send the command "get sensors\n" to the Arduino, and it must catch this command with serialEvent() _(this is a reserved function name for this purpose)_. Then the Arduino must interpret and respond with whatever JSON formatted data it wishes. This data will be used by PiMon.
 
 #### Pi
 1) Why an access point?
@@ -52,10 +55,10 @@ It offers a way to share data between processes by storing it in a dictionary (a
 
 3) What is Waitress and Flask?
 Flask is what sets up the server's replies. It tells what commands to look for and what to respond with when the client requests.
-Waitress is what sets up the server actually interprets the incoming messages. It is what makes the website accessible.
+Waitress is what sets up the server and actually interprets the incoming messages. It is what makes the website accessible.
 
 4) What the heck is going on in the HTML?
-Flask offers a precompiler called Jinja2. This allows the server to manipulate the HTML before sending it to the client. The file root.html gives the basic form of the webpage as well as Jinja2 "blocks". This allows index.html to only define what goes in these "blocks". _It is a little complicated, but it is neat._ 
+Flask offers a precompiler language called Jinja2. This allows the server to manipulate the HTML before sending it to the client. The file root.html gives the basic form of the webpage as well as Jinja2 "blocks". This allows index.html to only define what goes in these "blocks". _It is a little complicated, but it is neat._ 
 
 </details><br>
 
@@ -64,7 +67,7 @@ Flask offers a precompiler called Jinja2. This allows the server to manipulate t
 #### Before execution
 <details> <summary> Expand </summary>
 
-For obvious reasons, the Arduino must be plugged into the Pi by USB.
+For obvious reasons, the Arduino must be plugged into the Pi by USB. It must be capable of interpretting and responding to the `get sensors` command.
 
 The Pi must be an available access point, running a ReDis server, and running the SerialManager process. The access point should be automatic. Running the ReDis server and SerialManager processes can be done manually, or at bootup by altering rc2.d
 
