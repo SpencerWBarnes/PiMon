@@ -79,7 +79,31 @@ To launch PiMon open a terminal, navigate to the PiMon folder, and execute `sudo
 
 ## Description
 
+#### From a client view 
 The client will connect to the Pi's network. The Pi will then give the client an IP address so that it can send and recieve data.
 
 When the client requests the PiMon webpage, the Pi will defer to the Waitress server. Waitress will interpret the Flask code and send the necessary data, in this case it will send index.html. Before sending, Jinja2 will complete its preprocessing where it substitutes the code blocks.
 
+The client will now execute the webpage's embedded JavaScript code which sends a data request for /console_stream to the Pi and sets a function call every XX milliseconds.
+
+Now every XX milliseconds the client will interpret the data from the Pi and update the webpage accordingly. The data is added dynamically, so the webpage is independent of what data or hardware the Pi and Arduino have. None of the data is stored long term with numeric and boolean data being deleted as soon as a new message is recieved and streams only storing the most recent ZZ number of characters.
+
+#### From the server's view
+When the client requests new data by requesting /console_stream, it will return whatever data is held in ReDis, ask the arduinoPoller thread to keep polling, and sleep the thread so it is not constantly running.
+
+The arduinoPoller thread is in parallel to the server. As long as it is asked to poll the Arduino, it will send a message every YY seconds to the SerialManager and listen for a response. The SerialManager will listen for a request, send the message to the Arduino, then publish the Arduino's reply to the channel provided to it.
+
+The arduinoPoller listens to this reply channel. Once a response is recieved it updates the data stored in ReDis. The poller then shuts itself off, and another process (namely app.py) must manually call keepPollAlive. This is so that unless there is an active user, the poller does not message the Arduino.
+
+The arduinoPoller then sleeps its thread so it is not constantly running.
+
+#### From the Arduino's view
+The Arduino is single threaded. Each Arduino program follows a default structure. First any global commands are run, setup() is run once, then in an infinite while it runs loop() then serialEvent() if incoming serial data is detected. **This means that is loop does not release control quickly** (below 50ms) **the serialEvent handler may not work properly.**
+
+The Arduino must aggregate incoming messages in the serialEvent() function. It will come in several characters at a time, so a buffer of characters must be filled until a line terminater is encountered.
+
+For PiMon to work, the Arduino must have a function that interprets the serial message and acts accordinly if it is `get sensors`. The reply must be a properly formed JSON formatted string with at least an `ack` property and ending with a line terminater. The **JsonSerialStream** library was made to help with this.
+
+Another useful module written was **ArduinoMonitor** which contains libraries Logger and SensorMonitor. Logger provides a way for Arduinos to store logging data, which can be coupled with PiMon to feed out logging data. SensorMonitor is a library with some common sensor types which return sensor data that can help assist in sending JSON data to PiMon.
+
+Just as it is important that loop() is short so serialEvent() may run, it is important that sending serial data is fast so it does not impede the Arduino's operation.
