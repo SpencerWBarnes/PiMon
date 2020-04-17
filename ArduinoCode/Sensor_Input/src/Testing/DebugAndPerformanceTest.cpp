@@ -16,7 +16,11 @@ void testCode()
         avgDummyTime = ((avgDummyTime*3) + (millis() - dummyStart))/4;
         dummyData = 0;
         dummyStart = millis();
-        logger.logSafe("Test.ticker", ".");
+        logger.log("Test.ticker", ".");
+        if (digitalRead(8))
+        {
+          logger.log("Switch","Collision");
+        }
     }
     dummyData++;
 }
@@ -62,6 +66,6 @@ void getMemoryData(JsonSerialStream &outgoing)
 void getTestData(JsonSerialStream &outgoing)
 {
   if (dummyData % 50 == 0) {
-    logger.logSafe("Dumb Chance",dummyData);
+    logger.log("Dumb Chance",dummyData);
   }
 }

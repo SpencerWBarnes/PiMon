@@ -1,0 +1,82 @@
+{% extends "root.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-header">
+          <label class="mb-0" for="int_display">Numeric</label>
+        </div>
+        <div class="card-body">
+          <!-- integer display -->
+          <textarea id="int_display" class="form-control bg-dark text-white border-white" disabled
+                    rows="10"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 mt-4 mt-sm-0">
+      <div class="card">
+        <div class="card-header">
+          <label class="mb-0" for="bool_display">Boolean</label>
+        </div>
+        <div class="card-body">
+          <!-- boolean display -->
+          <textarea id="bool_display" class="form-control bg-dark text-white border-white" disabled
+                    rows="10"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mt-4">
+    <div class="card-header">
+      <ul class="nav nav-pills card-header-pills" id="logNavBar">
+      </ul>
+    </div>
+    <div class="card-body mt-0">
+      <!-- console display -->
+      <textarea id="out_display" class="form-control bg-dark text-white border-white" disabled
+                rows="15"></textarea>
+
+      <!-- console toolbar -->
+      <div class="btn-toolbar" role="toolbar">
+        <!-- auto scroll button -->
+        <div class="col-auto ml-auto px-0">
+          <button id="in_autoScroll" type="button" data-toggle="button" class="btn btn-outline-primary active">
+            Auto Scroll
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+  <script src="{{ url_for('static', filename='JavaScript/index.js') }}"></script>
+  <script>
+    // select page objects
+    const $outDisplay = $('#out_display');
+    const $inAutoScroll = $('#in_autoScroll');
+    const $boolDisplay = $('#bool_display');
+    const $intDisplay = $('#int_display');
+    const $heart = $('#heart');
+    var logStreams = {'currentStream':''};
+    var ackId = 0;
+    var watchDogTimer = 0;
+
+    // connect to stream
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', "{{ url_for('console_stream') }}");
+    xhr.send();
+    let position = 0;
+
+    setInterval(function () {
+      // update the displays
+      update();
+    }, 150);
+  </script>
+{% endblock %}
