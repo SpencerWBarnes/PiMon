@@ -1,10 +1,10 @@
 # PiMon
-Designed for Mississippi State University IEEE SECON Robotics team in Software Engineer Senior Project 2019.
+Designed for the Mississippi State University IEEE SECON Robotics team in Software Engineer Senior Project 2019-2020
 Provides a web interface to view robot diagnostics data.
 
 
 ## Authors
-Spencer Barnes, Jake Griesmer, Jordan Stremming, Tyler Whiticker
+Spencer Barnes, Jake Griesmer, Jordan Stremming, Tyler Whiticker, Dylan Santa Cruz, Will Storey
 
 
 ## Installation
@@ -33,14 +33,21 @@ type `pipenv install libsass`. This bypasses `pipenv` but fixes the bug.
 
 
 ## Setup
-The Pi must be configured:
+The Pi must already be configured:
 1) As a wireless access point. Requiring:
    * Wireless abilities, built in or as a dongle
-   * Set up as a DNS server
-   * Set up as a DHCP server
+   * Set up as a DNS server *
+   * Set up as a DHCP server **
    * Set IP address of host device (Pi)
 2) With Redis server
 3) With SerialManager _[GitHub here](https://github.com/MSUSeconRobotics/SerialManager.git)_
+
+<sub>
+* So the Pi can tell connected devices the IP address of websites
+<br>
+** So the Pi can give connected devices an IP address
+</sub>
+<br><br>
 
 In order to run services on bootup, a script must be added to `/etc/init.d/`
 and the run `sudo update-rc.d <FileName> defaults`.
@@ -57,7 +64,7 @@ PiMon is developed with the following:
 You may need C++ Build Tools to install all packages.
 
 ## Usage
-PiMon runs on a Waitress server.
+PiMon runs on a Python Waitress server.
 
 Run the app anywhere with:
 ```
@@ -77,3 +84,7 @@ or
 sudo pipenv shell
 python app.py
 ```
+
+---
+Please note that due to unanticipated circumstances _(global pandemic)_ we were not able to set up a second Pi with this configuration. 
+We sincerely apologize if the above steps are incomplete, and **we would appreciate it if users would add to this repository**. 
