@@ -1,9 +1,11 @@
 # PiMon's code explained
 
 ## Inital Setup
+
+#### Hardware
+
 <details> <summary> Expand </summary> 
 
-### Hardware
 * Arduino
   * A low level microcontroller that works closely with hardware (Uno, Mega, Due). These devices are highly limited memory, single thread, and slow. Written in Arduino C.
 * Raspberry Pi
@@ -11,7 +13,12 @@
 * A client
   * This is any device connected to the website (phone, laptop, Pi). Uses a browser to access, view, and run the website. Written in JavaScript, CSS, HTML.
 
-### File structure
+</details><br>
+
+#### File structure
+
+<details> <summary> Expand </summary> 
+
 Arduino
 * Primary code is in: ArduinoCode/Sensor_Input/Sensor_Input.ino
 * Libraries found in: ArduinoCode/Sensor_Input/Src/
@@ -27,28 +34,52 @@ Client
 * Webpage CSS: static/
 * Webpage JavaScript: static/JavaScript/
 
+</details><br>
 
-### Code implementation
+#### Code implementation
+
+<details> <summary> Expand </summary> 
+
 #### Arduino
 Due to the Arduino having limited capability, its code must be written with the intent of being used with PiMon. Its code must follow a similar structure to that found in Sensor_Input.py. The Pi will send the command "get sensors\n" to the Arduino, and it must catch this command with serialEvent() _(this is a reserved function name for this purpose)_. Then the Arduino must interpret and respond with whatever data it wishes. This data will be used by PiMon.
 
 #### Pi
-Why an access point?
+1) Why an access point?
 This allows the Pi to easily, freely, and securely serve the website. It also means it is always available and not dependant on the network in the area.
 
-What is ReDis?
+2) What is ReDis?
 It offers a way to share data between processes by storing it in a dictionary (as seen between the arduinoPoller.py and app.py). It also offers a Publish/Subscribe service between processes (as seen with the serialManager process). **Warning**: this does require initial set up on the Pi.
 
-What is Waitress and Flask?
+3) What is Waitress and Flask?
 Flask is what sets up the server's replies. It tells what commands to look for and what to respond with when the client requests.
 Waitress is what sets up the server actually interprets the incoming messages. It is what makes the website accessible.
 
-What the heck is going on in the HTML?
-Flask offers a precompiler called Jinja2. This allows the server to manipulate the HTML before sending it to the client. 
+4) What the heck is going on in the HTML?
+Flask offers a precompiler called Jinja2. This allows the server to manipulate the HTML before sending it to the client. The file root.html gives the basic form of the webpage as well as Jinja2 "blocks". This allows index.html to only define what goes in these "blocks". _It is a little complicated, but it is neat._ 
 
-</details>
+</details><br>
 
 ## Runtime
+
+#### Before execution
 <details> <summary> Expand </summary>
 
+For obvious reasons, the Arduino must be plugged into the Pi by USB.
+
+The Pi must be an available access point, running a ReDis server, and running the SerialManager process. The access point should be automatic. Running the ReDis server and SerialManager processes can be done manually, or at bootup by altering rc2.d
+
 </details>
+
+#### Execution time
+<details><summary> Expand </summary>
+
+To launch PiMon open a terminal, navigate to the PiMon folder, and execute `sudo pipenv run python app.py`. This will launch the arduinoPoller.py in a separate thread, and it will make the webpage available at 192.168.1.1
+
+</details>
+
+## Description
+
+The client will connect to the Pi's network. The Pi will then give the client an IP address so that it can send and recieve data.
+
+When the client requests the PiMon webpage, the Pi will defer to the Waitress server. Waitress will interpret the Flask code and send the necessary data, in this case it will send index.html. Before sending, Jinja2 will complete its preprocessing where it substitutes the code blocks.
+
