@@ -38,7 +38,7 @@ void getPerformanceData(JsonSerialStream &outgoing)
 void getTimingData(JsonSerialStream &outgoing)
 {
   // Show avg time to count dummyData
-  outgoing.addNestedObject("avgDummyTime");
+  outgoing.addNestedObject("avgTime");
   outgoing.addProperty("data", avgDummyTime);
   outgoing.addProperty("units", "ms");
   outgoing.closeNestedObject();
