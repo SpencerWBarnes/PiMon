@@ -74,7 +74,7 @@ sudo /etc/init.d/pimon start
 ```
 and to stop the app:
 ```
-sudo /etc/init.s/pimon stop
+sudo /etc/init.d/pimon stop
 ```
 
 The app can also be run by executing the following command in the dev folder:
@@ -86,6 +86,11 @@ or
 sudo pipenv shell
 python app.py
 ```
+
+## Resources
+* Explanation on how to upload to a arduino board via commandline on a pi [here](https://www.woolseyworkshop.com/2019/04/14/using-the-arduino-command-line/)
+* Explanation on what Jinja2 is and how to use it [here](https://codeburst.io/jinja-2-explained-in-5-minutes-88548486834e)
+* Expalnation of init.d scripts and how they are used on startup [here](https://www.poftut.com/what-is-init-d-and-how-to-use-for-service-management-in-linux/)
 
 ---
 Please note that due to unanticipated circumstances _(global pandemic)_ we were not able to set up a second Pi with this configuration. 
