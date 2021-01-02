@@ -66,10 +66,12 @@ def create_app():
 
         def events():
             while True:
-                arduinoData = json.loads(str(red.get('msg')))
-                monitorData = get_pi_logs(arduinoData)
-                logger.debug('Monitor Data: ' + str(monitorData))
-                yield json.dumps(monitorData)
+                arduinoData = str(red.get('msg'))
+                if (arduinoData != None):
+                    arduinoData = json.loads(arduinoData)
+                    monitorData = get_pi_logs(arduinoData)
+                    logger.debug('Monitor Data: ' + str(monitorData))
+                    yield json.dumps(monitorData)
 
                 arduinoPoller.keepPollAlive()
                 time.sleep(.1)
