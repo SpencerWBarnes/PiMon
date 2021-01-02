@@ -66,7 +66,7 @@ def create_app():
             while True:
                 arduinoData = json.loads(red.get('msg'))
                 monitorData = get_pi_logs(arduinoData)
-                logger.debug(f"Monitor Data: {monitorData}")
+                logger.debug('Monitor Data: ' + str(monitorData))
                 yield json.dumps(monitorData)
 
                 arduinoPoller.keepPollAlive()
@@ -84,7 +84,7 @@ def get_pi_logs(dataDictionary):
       for name in streamNames:
           if (red.exists(name)):
               dataDictionary[name] = red.get(name)
-    logger.debug(f"Data Dictionary: {dataDictionary}")
+    logger.debug('Data Dictionary: ' + str(dataDictionary))
     return dataDictionary
 
 if __name__ == '__main__':
