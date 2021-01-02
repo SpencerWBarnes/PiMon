@@ -16,10 +16,12 @@ import arduinoPoller
 red = redis.StrictRedis()
 
 logger = logging.getLogger('RedisDataStreams')
-fileName = '/tmp/logFiles/RedisDataStreams'
-if not(os.path.exists(fileName)):
-    os.makedirs(fileName)
-handler = RotatingFileHandler(filename=fileName, 
+dirName = '/tmp/logFiles'
+
+if not(os.path.exists(dirName)):
+    os.makedirs(dirName)
+
+handler = RotatingFileHandler(filename=os.path.join(dirName, 'RedisDataStreams'), 
                             maxBytes=(1024*1024),
                             backupCount=1)
 formatter = logging.Formatter("%(asctime)s %(name)-12s %(levelname)-8s %(message)s", datefmt="%m/%d/%Y %I:%M:%S")
