@@ -66,7 +66,7 @@ def create_app():
 
         def events():
             while True:
-                arduinoData = json.loads(red.get('msg'))
+                arduinoData = json.loads(str(red.get('msg')))
                 monitorData = get_pi_logs(arduinoData)
                 logger.debug('Monitor Data: ' + str(monitorData))
                 yield json.dumps(monitorData)
@@ -82,7 +82,7 @@ def create_app():
 def get_pi_logs(dataDictionary):
     logger.info('Getting pi logs')
     if (red.exists('piLogStreams')):
-      streamNames = json.loads(red.get('piLogStreams'))
+      streamNames = json.loads(str(red.get('piLogStreams')))
       for name in streamNames:
           if (red.exists(name)):
               dataDictionary[name] = red.get(name)
