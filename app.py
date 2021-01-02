@@ -20,8 +20,8 @@ fileName = '/tmp/logFiles/RedisDataStreams'
 if not(os.path.exists(fileName)):
     os.makedirs(fileName)
 handler = RotatingFileHandler(filename=fileName, 
-                            maxBytes=maxBytes,
-                            backupCount=backupCount)
+                            maxBytes=(1024*1024),
+                            backupCount=1)
 formatter = logging.Formatter("%(asctime)s %(name)-12s %(levelname)-8s %(message)s", datefmt="%m/%d/%Y %I:%M:%S")
 handler.setFormatter(formatter)
 logger.addHandler(handler)
