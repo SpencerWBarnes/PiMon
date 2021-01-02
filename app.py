@@ -6,8 +6,6 @@ import redis
 from flask import Flask, render_template, Response, send_from_directory
 from flask_assets import Environment, Bundle
 
-import json
-
 # import function to start reading/writing from serial port
 import arduinoPoller
 
@@ -50,10 +48,7 @@ def create_app():
 
         def events():
             while True:
-                arduinoData = json.loads(red.get('msg'))
-                monitorData = get_pi_logs(arduinoData)
-                yield json.dumps(monitorData)
-
+                yield red.get('msg')
                 arduinoPoller.keepPollAlive()
                 time.sleep(.1)
 
@@ -61,14 +56,6 @@ def create_app():
 
     return app 
 
-
-def get_pi_logs(dataDictionary):
-    if (red.exists('piLogStreams')):
-      streamNames = json.loads(red.get('piLogStreams'))
-      for name in streamNames:
-          if (red.exists(name)):
-              dataDictionary[name] = red.get(name)
-    return dataDictionary
 
 if __name__ == '__main__':
     from waitress import serve
