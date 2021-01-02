@@ -21,7 +21,7 @@ dirName = '/tmp/logFiles'
 if not(os.path.exists(dirName)):
     os.makedirs(dirName)
 
-handler = RotatingFileHandler(filename=os.path.join(dirName, 'RedisDataStreams'), 
+handler = RotatingFileHandler(filename=os.path.join(dirName, 'RedisDataStreams.log'), 
                             maxBytes=(1024*1024),
                             backupCount=1)
 formatter = logging.Formatter("%(asctime)s %(name)-12s %(levelname)-8s %(message)s", datefmt="%m/%d/%Y %I:%M:%S")
@@ -66,7 +66,7 @@ def create_app():
 
         def events():
             while True:
-                logger.info("Getting redis data streams")
+                logger.info('Getting redis data streams')
                 arduinoData = str(red.get('msg'))
                 logger.debug('Arduino data: ' + arduinoData)
                 if (arduinoData != None):
@@ -96,4 +96,5 @@ def get_pi_logs(dataDictionary):
 if __name__ == '__main__':
     from waitress import serve
 
+    logger.info('Starting server')
     serve(create_app(), host='0.0.0.0', port='80')
