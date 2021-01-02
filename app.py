@@ -3,6 +3,8 @@ import sys
 import time
 
 import redis
+import logging
+from logging.handlers import RotatingFileHandler
 from flask import Flask, render_template, Response, send_from_directory
 from flask_assets import Environment, Bundle
 
@@ -12,6 +14,18 @@ import json
 import arduinoPoller
 
 red = redis.StrictRedis()
+
+logger = logging.getLogger('RedisDataStreams')
+fileName = '/tmp/logFiles/RedisDataStreams'
+if not(os.path.exists(fileName)):
+    os.makedirs(fileName)
+handler = RotatingFileHandler(filename=fileName, 
+                            maxBytes=maxBytes,
+                            backupCount=backupCount)
+formatter = logging.Formatter("%(asctime)s %(name)-12s %(levelname)-8s %(message)s", datefmt="%m/%d/%Y %I:%M:%S")
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+logger.setLevel(0)
 
 
 def create_app():
@@ -52,6 +66,7 @@ def create_app():
             while True:
                 arduinoData = json.loads(red.get('msg'))
                 monitorData = get_pi_logs(arduinoData)
+                logger.debug(f"Monitor Data: {monitorData}")
                 yield json.dumps(monitorData)
 
                 arduinoPoller.keepPollAlive()
@@ -63,11 +78,13 @@ def create_app():
 
 
 def get_pi_logs(dataDictionary):
+    logger.info('Getting pi logs')
     if (red.exists('piLogStreams')):
       streamNames = json.loads(red.get('piLogStreams'))
       for name in streamNames:
           if (red.exists(name)):
               dataDictionary[name] = red.get(name)
+    logger.debug(f"Data Dictionary: {dataDictionary}")
     return dataDictionary
 
 if __name__ == '__main__':
