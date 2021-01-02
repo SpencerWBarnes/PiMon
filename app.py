@@ -66,7 +66,9 @@ def create_app():
 
         def events():
             while True:
+                logger.info("Getting redis data streams")
                 arduinoData = str(red.get('msg'))
+                logger.debug('Arduino data: ' + arduinoData)
                 if (arduinoData != None):
                     arduinoData = json.loads(arduinoData)
                     monitorData = get_pi_logs(arduinoData)
