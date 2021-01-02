@@ -67,7 +67,7 @@ def create_app():
         def events():
             while True:
                 logger.info('Getting redis data streams')
-                arduinoData = str(red.get('msg'))
+                arduinoData = str(red.get('msg'), 'utf-8')
                 logger.debug('Arduino data: ' + arduinoData)
                 if (arduinoData != None):
                     arduinoData = json.loads(arduinoData)
@@ -86,7 +86,7 @@ def create_app():
 def get_pi_logs(dataDictionary):
     logger.info('Getting pi logs')
     if (red.exists('piLogStreams')):
-      streamNames = json.loads(str(red.get('piLogStreams')))
+      streamNames = json.loads(str(red.get('piLogStreams'), 'utf-8'))
       for name in streamNames:
           if (red.exists(name)):
               dataDictionary[name] = red.get(name)
@@ -97,5 +97,4 @@ if __name__ == '__main__':
     from waitress import serve
 
     logger.info('Starting server')
-    print('Starting server')
     serve(create_app(), host='0.0.0.0', port='80')
