@@ -27,7 +27,7 @@ handler = RotatingFileHandler(filename=os.path.join(dirName, 'RedisDataStreams.l
 formatter = logging.Formatter("%(asctime)s %(name)-12s %(levelname)-8s %(message)s", datefmt="%m/%d/%Y %I:%M:%S")
 handler.setFormatter(formatter)
 logger.addHandler(handler)
-logger.setLevel(0)
+logger.setLevel(logging.DEBUG)
 
 
 def create_app():
@@ -97,4 +97,5 @@ if __name__ == '__main__':
     from waitress import serve
 
     logger.info('Starting server')
+    print('Starting server')
     serve(create_app(), host='0.0.0.0', port='80')
