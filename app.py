@@ -72,7 +72,7 @@ def create_app():
                     arduinoData = json.loads(arduinoData)
                     monitorData = get_pi_logs(arduinoData)
                     logger.debug('Monitor Data: ' + str(monitorData))
-                    yield json.dumps(monitorData)
+                    yield json.dumps(monitorData).encode('utf-8')
 
                 arduinoPoller.keepPollAlive()
                 time.sleep(.1)
