@@ -39,7 +39,8 @@ function update() {
   let messages = xhr.responseText.split('\n');
   // For each message that has not been analyzed (last message is empty, hence -1)
   messages.slice(position, -1).forEach(function (messageString) {
-
+    // Adjust position early so that if an error is encountered, if does not get hung up on it
+    position = messages.length - 1;
     // Convert JSON message into an object
     const messageJson = JSON.parse(messageString);
 
