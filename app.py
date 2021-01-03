@@ -106,7 +106,7 @@ def create_app():
 def get_pi_logs(dataDictionary):
     logger.info('Getting pi logs')
     piLogStreams = red.keys(pattern='Pi*')
-    for streamName in piLogStreams
+    for streamName in piLogStreams:
         dataDictionary[streamName] = red.get(streamName)
         # Record each data item to the log file
         piLogger.info(str(streamName) + ' : ' + str(dataDictionary[streamName]))
