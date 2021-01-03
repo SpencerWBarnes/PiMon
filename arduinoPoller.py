@@ -19,6 +19,8 @@ def requestSensorData(interval):
     while True:
         # Only poll if alive
         if(isPollAlive()):
+            redisConnection.set('Pi ArduinoPoller', 'Sending message to arduino: ' + str(message))
+
             redisConnection.publish('toArduino', '%s:%s' % (replyChannel, message))
             reply = subscriptions.get_message(timeout=interval)
             # If the reply is good

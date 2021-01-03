@@ -105,13 +105,11 @@ def create_app():
 
 def get_pi_logs(dataDictionary):
     logger.info('Getting pi logs')
-    if (red.exists('piLogStreams')):
-      streamNames = json.loads(str(red.get('piLogStreams'), 'utf-8'))
-      for name in streamNames:
-          if (red.exists(name)):
-              dataDictionary[name] = red.get(name)
-              # Record each data item to the log file
-              piLogger.info(str(name) + ' : ' + str(dataDictionary[name]))
+    piLogStreams = red.keys(pattern='Pi*')
+    for streamName in piLogStreams
+        dataDictionary[streamName] = red.get(streamName)
+        # Record each data item to the log file
+        piLogger.info(str(streamName) + ' : ' + str(dataDictionary[streamName]))
     return dataDictionary
 
 if __name__ == '__main__':
