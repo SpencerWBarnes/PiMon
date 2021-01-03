@@ -68,7 +68,6 @@ def create_app():
             while True:
                 logger.info('Getting redis data streams')
                 arduinoData = str(red.get('msg'), 'utf-8')
-                logger.debug('Arduino data: ' + arduinoData)
                 if (arduinoData != None):
                     arduinoData = json.loads(arduinoData)
                     monitorData = get_pi_logs(arduinoData)
@@ -90,7 +89,6 @@ def get_pi_logs(dataDictionary):
       for name in streamNames:
           if (red.exists(name)):
               dataDictionary[name] = red.get(name)
-    logger.debug('Data Dictionary: ' + str(dataDictionary))
     return dataDictionary
 
 if __name__ == '__main__':

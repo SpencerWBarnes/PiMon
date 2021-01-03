@@ -38,9 +38,10 @@ function update() {
   // Get each message
   let messages = xhr.responseText.split('\n');
   // For each message that has not been analyzed (last message is empty, hence -1)
-  messages.slice(position, -1).forEach(function (messageString) {
+  messages.slice(position).forEach(function (messageString) {
 
     // Convert JSON message into an object
+    console.log(messageString)
     const messageJson = JSON.parse(messageString);
 
     // If the message's ack was the same as the last message, it is stale
