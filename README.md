@@ -87,6 +87,15 @@ sudo pipenv shell
 python app.py
 ```
 
+## Logging Explained
+All logs will be output to the PiMon webpage as well as to the log files found at `/tmp/logFiles/`. This data is pushed each time a client requests an update through the `stream/console` endpoint. the log files on the Pi may include other logging data as well if desired.  
+
+#### Arduino:
+To log sensors or logging streams on the Arduino, use the SensorMonitor and Logger C++ libraries to create the logs. Then use the JsonSerialStream C++ library to output those logs across the USB connection to the Pi. Arduinos have severely limited memory capabilities, so their logging abilities are short term and are dependent on their own workload and how frequently the Pi requests for the data off the Arduino.
+
+#### Pi:
+To log sensors or logging streams on the Pi, use redis to set a value that can then be accessed across processes, ex: `redisConnection.set('Pi<StreamName>', '<StreamData>')`. These Pi logging streams must use the prefix `Pi` at the beginning of their stream name to be included, as seen in the example before.
+
 ## Resources
 * Explanation on how to upload to a arduino board via commandline on a pi [here](https://www.woolseyworkshop.com/2019/04/14/using-the-arduino-command-line/)
 * Explanation on what Jinja2 is and how to use it [here](https://codeburst.io/jinja-2-explained-in-5-minutes-88548486834e)
