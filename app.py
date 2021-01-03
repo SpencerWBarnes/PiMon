@@ -15,19 +15,37 @@ import arduinoPoller
 
 red = redis.StrictRedis()
 
-logger = logging.getLogger('RedisDataStreams')
 dirName = '/tmp/logFiles'
 
 if not(os.path.exists(dirName)):
     os.makedirs(dirName)
 
-handler = RotatingFileHandler(filename=os.path.join(dirName, 'RedisDataStreams.log'), 
+logger = logging.getLogger()
+handler = RotatingFileHandler(filename=os.path.join(dirName, 'PimonGeneral.log'), 
                             maxBytes=(1024*1024),
                             backupCount=1)
 formatter = logging.Formatter("%(asctime)s %(name)-12s %(levelname)-8s %(message)s", datefmt="%m/%d/%Y %I:%M:%S")
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 logger.setLevel(logging.DEBUG)
+
+unoLogger = logging.getLogger('Arduino')
+handler = RotatingFileHandler(filename=os.path.join(dirName, 'ArduinoDataStream.log'), 
+                            maxBytes=(1024*1024),
+                            backupCount=1)
+formatter = logging.Formatter("%(asctime)s %(name)-12s %(levelname)-8s %(message)s", datefmt="%m/%d/%Y %I:%M:%S")
+handler.setFormatter(formatter)
+unoLogger.addHandler(handler)
+unoLogger.setLevel(logging.DEBUG)
+
+piLogger = logging.getLogger('Pi')
+handler = RotatingFileHandler(filename=os.path.join(dirName, 'PiDataStream.log'), 
+                            maxBytes=(1024*1024),
+                            backupCount=1)
+formatter = logging.Formatter("%(asctime)s %(name)-12s %(levelname)-8s %(message)s", datefmt="%m/%d/%Y %I:%M:%S")
+handler.setFormatter(formatter)
+piLogger.addHandler(handler)
+piLogger.setLevel(logging.DEBUG)
 
 
 def create_app():
@@ -70,8 +88,10 @@ def create_app():
                 arduinoData = str(red.get('msg'), 'utf-8')
                 if (arduinoData != None):
                     arduinoData = json.loads(arduinoData)
+                    # Record each data item to the log file
+                    for key, value in arduinoData:
+                        unoLogger.info(str(key) + ' : ' + str(value))
                     monitorData = get_pi_logs(arduinoData)
-                    logger.debug('Monitor Data: ' + str(monitorData))
                     # Add a terminator so that messages do not collide in the JS
                     yield json.dumps(monitorData) + '\n'
 
@@ -90,6 +110,8 @@ def get_pi_logs(dataDictionary):
       for name in streamNames:
           if (red.exists(name)):
               dataDictionary[name] = red.get(name)
+              # Record each data item to the log file
+              piLogger.info(str(name) + ' : ' + str(dataDictionary[name]))
     return dataDictionary
 
 if __name__ == '__main__':
