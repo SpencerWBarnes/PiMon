@@ -89,8 +89,8 @@ def create_app():
                 if (arduinoData != None):
                     arduinoData = json.loads(arduinoData)
                     # Record each data item to the log file
-                    for key, value in arduinoData:
-                        unoLogger.info(str(key) + ' : ' + str(value))
+                    for key in arduinoData:
+                        unoLogger.info(str(key) + ' : ' + str(arduinoData[key]))
                     monitorData = get_pi_logs(arduinoData)
                     # Add a terminator so that messages do not collide in the JS
                     yield json.dumps(monitorData) + '\n'
