@@ -73,7 +73,7 @@ def create_app():
                     monitorData = get_pi_logs(arduinoData)
                     logger.debug('Monitor Data: ' + str(monitorData))
                     # Add a terminator so that messages do not collide in the JS
-                    yield json.dumps(monitorData) + ','
+                    yield json.dumps(monitorData) + '\n'
 
                 arduinoPoller.keepPollAlive()
                 time.sleep(.1)
