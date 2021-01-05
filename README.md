@@ -66,7 +66,7 @@ You may need C++ Build Tools to install all packages.
 If you want an explanation or description of the code, reference the [Code Explained doc](/CodeExplained.md).
 
 ## Usage
-PiMon runs on a Python Waitress server. The webpage's address is `192.168.1.1`
+PiMon runs on a Python Waitress server. Connect to its WiFi network `SECONboi` with password `secon1337`, then go to the webpage's address at `192.168.1.1`
 
 Run the app anywhere with:
 ```
@@ -86,6 +86,15 @@ or
 sudo pipenv shell
 python app.py
 ```
+
+## Logging Explained
+All logs will be output to the PiMon webpage as well as to the log files found at `/tmp/logFiles/`. This data is pushed each time a client requests an update through the `stream/console` endpoint. the log files on the Pi may include other logging data as well if desired.  
+
+#### Arduino:
+To log sensors or logging streams on the Arduino, use the SensorMonitor and Logger C++ libraries to create the logs. Then use the JsonSerialStream C++ library to output those logs across the USB connection to the Pi. Arduinos have severely limited memory capabilities, so their logging abilities are short term and are dependent on their own workload and how frequently the Pi requests for the data off the Arduino.
+
+#### Pi:
+To log sensors or logging streams on the Pi, use redis to set a value that can then be accessed across processes, ex: `redisConnection.set('Pi<StreamName>', '<StreamData>')`. These Pi logging streams must use the prefix `Pi` at the beginning of their stream name to be included, as seen in the example before.
 
 ## Resources
 * Explanation on how to upload to a arduino board via commandline on a pi [here](https://www.woolseyworkshop.com/2019/04/14/using-the-arduino-command-line/)

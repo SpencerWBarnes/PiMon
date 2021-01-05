@@ -3,13 +3,49 @@ import sys
 import time
 
 import redis
+import logging
+from logging.handlers import RotatingFileHandler
 from flask import Flask, render_template, Response, send_from_directory
 from flask_assets import Environment, Bundle
+
+import json
 
 # import function to start reading/writing from serial port
 import arduinoPoller
 
 red = redis.StrictRedis()
+
+dirName = '/tmp/logFiles'
+
+if not(os.path.exists(dirName)):
+    os.makedirs(dirName)
+
+logger = logging.getLogger()
+handler = RotatingFileHandler(filename=os.path.join(dirName, 'PimonGeneral.log'), 
+                            maxBytes=(1024*1024),
+                            backupCount=1)
+formatter = logging.Formatter("%(asctime)s %(name)-12s %(levelname)-8s %(message)s", datefmt="%m/%d/%Y %I:%M:%S")
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+logger.setLevel(logging.DEBUG)
+
+unoLogger = logging.getLogger('Arduino')
+handler = RotatingFileHandler(filename=os.path.join(dirName, 'ArduinoDataStream.log'), 
+                            maxBytes=(1024*1024),
+                            backupCount=1)
+formatter = logging.Formatter("%(asctime)s %(name)-12s %(levelname)-8s %(message)s", datefmt="%m/%d/%Y %I:%M:%S")
+handler.setFormatter(formatter)
+unoLogger.addHandler(handler)
+unoLogger.setLevel(logging.DEBUG)
+
+piLogger = logging.getLogger('Pi')
+handler = RotatingFileHandler(filename=os.path.join(dirName, 'PiDataStream.log'), 
+                            maxBytes=(1024*1024),
+                            backupCount=1)
+formatter = logging.Formatter("%(asctime)s %(name)-12s %(levelname)-8s %(message)s", datefmt="%m/%d/%Y %I:%M:%S")
+handler.setFormatter(formatter)
+piLogger.addHandler(handler)
+piLogger.setLevel(logging.DEBUG)
 
 
 def create_app():
@@ -48,7 +84,17 @@ def create_app():
 
         def events():
             while True:
-                yield red.get('msg')
+                logger.info('Getting redis data streams')
+                arduinoData = str(red.get('msg'), 'utf-8')
+                if (arduinoData != None):
+                    arduinoData = json.loads(arduinoData)
+                    # Record each data item to the log file
+                    for key in arduinoData:
+                        unoLogger.info(str(key) + ' : ' + str(arduinoData[key]))
+                    monitorData = get_pi_logs(arduinoData)
+                    # Add a terminator so that messages do not collide in the JS
+                    yield json.dumps(monitorData) + '\n'
+
                 arduinoPoller.keepPollAlive()
                 time.sleep(.1)
 
@@ -57,7 +103,18 @@ def create_app():
     return app 
 
 
+def get_pi_logs(dataDictionary):
+    logger.info('Getting pi logs')
+    piLogStreams = red.keys(pattern='Pi*')
+    for streamName in piLogStreams:
+        streamName = str(streamName, 'utf-8')
+        dataDictionary[streamName] = str(red.get(streamName), 'utf-8')
+        # Record each data item to the log file
+        piLogger.info(str(streamName) + ' : ' + str(dataDictionary[streamName]))
+    return dataDictionary
+
 if __name__ == '__main__':
     from waitress import serve
 
+    logger.info('Starting server')
     serve(create_app(), host='0.0.0.0', port='80')
